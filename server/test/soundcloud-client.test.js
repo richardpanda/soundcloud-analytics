@@ -10,26 +10,30 @@ const soundCloudClient = new SoundCloudClient(soundCloudClientId);
 
 describe('SoundCloud client tests', () => {
   test('fetch user profile by user id', () => {
+    expect.assertions(1);
+
     nock('http://api.soundcloud.com')
       .get(`/users/${soundCloudUserId}`)
       .query({ client_id: soundCloudClientId })
       .reply(200);
 
-    return soundCloudClient.fetchUserProfileByUserId(soundCloudUserId);
+    return expect(soundCloudClient.fetchUserProfileByUserId(soundCloudUserId)).resolves.toBeDefined();
   });
 
   test('fetch user page by username', () => {
+    expect.assertions(1);
+
     nock('https://soundcloud.com')
       .get(`/${soundCloudUsername}`)
       .reply(200);
 
-    return soundCloudClient.fetchUserPageByUsername(soundCloudUsername);
+    return expect(soundCloudClient.fetchUserPageByUsername(soundCloudUsername)).resolves.toBeDefined();
   });
 
   test('fetch user profile by username', () => {
     fs.readFile('./test/fake-data/user-profile.html', 'utf8', (err, userProfileHtml) => {
       expect.assertions(1);
-      
+
       nock('https://soundcloud.com')
         .get(`/${soundCloudUsername}`)
         .reply(200, userProfileHtml)
