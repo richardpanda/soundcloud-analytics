@@ -10,7 +10,7 @@ class SoundCloudClient {
     return axios.get(url);
   }
 
-  fetchUserProfile(userId) {
+  fetchUserProfileByUserId(userId) {
     const url = `http://api.soundcloud.com/users/${userId}?client_id=${this.clientId}`;
     return axios.get(url);
   }

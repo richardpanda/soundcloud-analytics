@@ -14,7 +14,7 @@ describe('SoundCloud client tests', () => {
       .query({ client_id: soundCloudClientId })
       .reply(200);
 
-    return soundCloudClient.fetchUserProfile(soundCloudUserId);
+    return soundCloudClient.fetchUserProfileByUserId(soundCloudUserId);
   });
 
   test('fetch user page', () => {
