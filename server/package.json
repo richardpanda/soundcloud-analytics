@@ -1,0 +1,15 @@
+{
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "scripts": {
+    "test": "NODE_ENV=test node_modules/.bin/jest --colors --verbose"
+  },
+  "dependencies": {
+    "axios": "^0.16.2"
+  },
+  "devDependencies": {
+    "jest": "^20.0.4",
+    "nock": "^9.0.13"
+  }
+}
