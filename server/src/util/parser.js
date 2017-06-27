@@ -1,7 +1,7 @@
 class Parser {
-  static extractUserIdFromUserProfileHtml(userProfileHtml) {
+  static extractUserIdFromUserProfilePage(userProfilePage) {
     const re = /soundcloud:\/\/users:(\d+)/;
-    const match = re.exec(userProfileHtml);
+    const match = re.exec(userProfilePage);
     return match[1];
   }
 }

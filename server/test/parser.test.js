@@ -6,7 +6,7 @@ describe('Parser tests', () => {
   test('extract user id from user profile html', (done) => {
     fs.readFile('./test/fake-data/user-profile-page.html', 'utf8', (err, userProfilePage) => {
       expect(err).toBeNull();
-      expect(Parser.extractUserIdFromUserProfileHtml(userProfilePage)).toEqual('69257219');
+      expect(Parser.extractUserIdFromUserProfilePage(userProfilePage)).toEqual('69257219');
       done();
     });
   });

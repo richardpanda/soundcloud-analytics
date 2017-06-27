@@ -20,7 +20,7 @@ class SoundCloudClient {
   async fetchUserProfileByUsername(username) {
     try {
       const userProfilePageResponse = await this.fetchUserProfilePageByUsername(username);
-      const userId = Parser.extractUserIdFromUserProfileHtml(userProfilePageResponse.data);
+      const userId = Parser.extractUserIdFromUserProfilePage(userProfilePageResponse.data);
       return await this.fetchUserProfileByUserId(userId);
     } catch (e) {
       return e;
