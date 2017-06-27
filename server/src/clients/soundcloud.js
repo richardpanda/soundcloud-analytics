@@ -7,23 +7,23 @@ class SoundCloudClient {
     this.clientId = clientId;
   }
 
-  fetchUserProfilePageByUsername(username) {
-    const url = `https://soundcloud.com/${username}`;
-    return axios.get(url);
-  }
-
   fetchUserProfileByUserId(userId) {
     const url = `http://api.soundcloud.com/users/${userId}?client_id=${this.clientId}`;
     return axios.get(url);
   }
 
-  async fetchUserProfileByUsername(username) {
+  fetchUserProfilePageByUserPermalink(permalink) {
+    const url = `https://soundcloud.com/${permalink}`;
+    return axios.get(url);
+  }
+
+  async fetchUserProfileByUserPermalink(permalink) {
     try {
-      const userProfilePageResponse = await this.fetchUserProfilePageByUsername(username);
+      const userProfilePageResponse = await this.fetchUserProfilePageByUserPermalink(permalink);
       const userId = Parser.extractUserIdFromUserProfilePage(userProfilePageResponse.data);
       return await this.fetchUserProfileByUserId(userId);
     } catch (e) {
-      return e;
+      throw e;
     }
   }
 }

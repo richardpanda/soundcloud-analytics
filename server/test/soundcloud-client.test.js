@@ -1,7 +1,7 @@
 const fs = require('fs');
 const nock = require('nock');
 
-const { id, username } = require('./fake-data/user');
+const { id, permalink } = require('./fake-data/user');
 const SoundCloudClient = require('../src/clients/soundcloud');
 const { clientId } = require('../src/config/soundcloud');
 
@@ -19,22 +19,22 @@ describe('SoundCloud client tests', () => {
     return expect(soundCloudClient.fetchUserProfileByUserId(id)).resolves.toBeDefined();
   });
 
-  test('fetch user profile page by username', () => {
+  test('fetch user profile page by user permalink', () => {
     expect.assertions(1);
 
     nock('https://soundcloud.com')
-      .get(`/${username}`)
+      .get(`/${permalink}`)
       .reply(200);
 
-    return expect(soundCloudClient.fetchUserProfilePageByUsername(username)).resolves.toBeDefined();
+    return expect(soundCloudClient.fetchUserProfilePageByUserPermalink(permalink)).resolves.toBeDefined();
   });
 
-  test('fetch user profile by username', () => {
-    fs.readFile('./test/fake-data/user-profile-page.html', 'utf8', (err, userProfilePage) => {
-      expect.assertions(1);
+  test('fetch user profile by user permalink', (done) => {
+    expect.assertions(1);
 
+    fs.readFile('./test/fake-data/user-profile-page.html', 'utf8', (err, userProfilePage) => {
       nock('https://soundcloud.com')
-        .get(`/${username}`)
+        .get(`/${permalink}`)
         .reply(200, userProfilePage);
 
       nock('http://api.soundcloud.com')
@@ -42,7 +42,12 @@ describe('SoundCloud client tests', () => {
         .query({ client_id: clientId })
         .reply(200);
 
-      return expect(soundCloudClient.fetchUserProfileByUsername(username)).resolves.toBeDefined();
+      soundCloudClient.fetchUserProfileByUserPermalink(permalink)
+        .then((userProfile) => {
+          expect(userProfile).toBeDefined();
+          done();
+        })
+        .catch(done);
     });
   });
 });
