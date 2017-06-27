@@ -26,6 +26,8 @@ describe('Users API tests', () => {
     });
 
     test('create SoundCloud user', (done) => {
+      expect.assertions(1);
+      
       fs.readFile('./test/fake-data/user-profile-page.html', 'utf8', (err, userProfilePage) => {
         nock('https://soundcloud.com')
           .get(`/${username}`)
