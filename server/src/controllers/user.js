@@ -1,11 +1,9 @@
 const elasticsearch = require('elasticsearch');
 
 const config = require('../config');
+const elasticsearchClient = require('../clients/elasticsearch');
 const SoundCloudClient = require('../clients/soundcloud');
 
-const elasticsearchClient = new elasticsearch.Client({
-  host: config.elasticsearch.host,
-});
 const { index } = config.elasticsearch;
 const soundCloudClient = new SoundCloudClient(config.soundcloud.clientId);
 

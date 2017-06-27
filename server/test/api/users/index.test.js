@@ -1,15 +1,12 @@
-const elasticsearch = require('elasticsearch');
 const fs = require('fs');
 const nock = require('nock');
 const request = require('supertest');
 
 const app = require('../../../src/app');
 const config = require('../../../src/config');
+const elasticsearchClient = require('../../../src/clients/elasticsearch');
 const userProfileResponse = require('../../fake-data/user-profile-response');
 
-const elasticsearchClient = elasticsearch.Client({
-  host: config.elasticsearch.host,
-});
 const { index } = config.elasticsearch;
 const soundCloudClientId = config.soundcloud.clientId;
 const soundCloudUserId = '69257219';
