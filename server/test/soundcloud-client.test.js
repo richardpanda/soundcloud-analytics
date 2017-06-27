@@ -20,23 +20,23 @@ describe('SoundCloud client tests', () => {
     return expect(soundCloudClient.fetchUserProfileByUserId(soundCloudUserId)).resolves.toBeDefined();
   });
 
-  test('fetch user page by username', () => {
+  test('fetch user profile page by username', () => {
     expect.assertions(1);
 
     nock('https://soundcloud.com')
       .get(`/${soundCloudUsername}`)
       .reply(200);
 
-    return expect(soundCloudClient.fetchUserPageByUsername(soundCloudUsername)).resolves.toBeDefined();
+    return expect(soundCloudClient.fetchUserProfilePageByUsername(soundCloudUsername)).resolves.toBeDefined();
   });
 
   test('fetch user profile by username', () => {
-    fs.readFile('./test/fake-data/user-profile.html', 'utf8', (err, userProfileHtml) => {
+    fs.readFile('./test/fake-data/user-profile-page.html', 'utf8', (err, userProfilePage) => {
       expect.assertions(1);
 
       nock('https://soundcloud.com')
         .get(`/${soundCloudUsername}`)
-        .reply(200, userProfileHtml)
+        .reply(200, userProfilePage);
 
       nock('http://api.soundcloud.com')
         .get(`/users/${soundCloudUserId}`)

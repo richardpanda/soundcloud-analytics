@@ -7,7 +7,7 @@ class SoundCloudClient {
     this.clientId = clientId;
   }
 
-  fetchUserPageByUsername(username) {
+  fetchUserProfilePageByUsername(username) {
     const url = `https://soundcloud.com/${username}`;
     return axios.get(url);
   }
@@ -19,8 +19,8 @@ class SoundCloudClient {
 
   async fetchUserProfileByUsername(username) {
     try {
-      const response = await this.fetchUserPageByUsername(username);
-      const userId = Parser.extractUserIdFromUserProfileHtml(response.data);
+      const userProfilePageResponse = await this.fetchUserProfilePageByUsername(username);
+      const userId = Parser.extractUserIdFromUserProfileHtml(userProfilePageResponse.data);
       return await this.fetchUserProfileByUserId(userId);
     } catch (e) {
       return e;

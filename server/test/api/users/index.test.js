@@ -30,10 +30,10 @@ describe('Users API tests', () => {
     });
 
     test('create SoundCloud user', (done) => {
-      fs.readFile('./test/fake-data/user-profile.html', 'utf8', (err, userProfileHtml) => {
+      fs.readFile('./test/fake-data/user-profile-page.html', 'utf8', (err, userProfilePage) => {
         nock('https://soundcloud.com')
           .get(`/${soundCloudUsername}`)
-          .reply(200, userProfileHtml)
+          .reply(200, userProfilePage)
 
         nock('http://api.soundcloud.com')
           .get(`/users/${soundCloudUserId}`)
