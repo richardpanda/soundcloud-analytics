@@ -8,6 +8,10 @@ const { clientId } = require('../src/config/soundcloud');
 const soundCloudClient = new SoundCloudClient(clientId);
 
 describe('SoundCloud client tests', () => {
+  beforeEach(() => {
+    nock.cleanAll();
+  });
+
   test('fetch user profile by user id', async () => {
     expect.assertions(1);
 

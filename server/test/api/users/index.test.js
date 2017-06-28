@@ -14,6 +14,7 @@ const soundCloudClientId = config.soundcloud.clientId;
 describe('Users API tests', () => {
   describe('POST /api/users', () => {
     beforeEach(async () => {
+      nock.cleanAll();
       const isIndexExists = await elasticsearchClient.indices.exists({ index });
       if (isIndexExists) {
         await elasticsearchClient.indices.delete({ index });
