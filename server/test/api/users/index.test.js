@@ -48,5 +48,20 @@ describe('Users API tests', () => {
           done();
         });
     });
+
+    test('request body must contain permalink', (done) => {
+      expect.assertions(2);
+
+      request(app)
+        .post('/api/users')
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          }
+          expect(res.status).toEqual(400);
+          expect(res.body.message).toEqual('Permalink is missing.');
+          done();
+        });
+    });
   });
 });
