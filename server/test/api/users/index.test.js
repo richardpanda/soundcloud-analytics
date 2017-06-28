@@ -26,7 +26,7 @@ describe('Users API tests', () => {
     });
 
     test('create SoundCloud user', (done) => {
-      expect.assertions(1);
+      expect.assertions(3);
 
       fs.readFile('./test/fake-data/user-profile-page.html', 'utf8', (err, userProfilePage) => {
         nock('https://soundcloud.com')
@@ -46,6 +46,8 @@ describe('Users API tests', () => {
               done(err);
             }
             expect(res.status).toEqual(200);
+            expect(res.body.permalink).toEqual(permalink);
+            expect(res.body.username).toEqual(userProfileResponse.username);
             done();
           });
       });
