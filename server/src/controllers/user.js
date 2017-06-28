@@ -6,6 +6,7 @@ const SoundCloudClient = require('../clients/soundcloud');
 
 const { index } = config.elasticsearch;
 const soundCloudClient = new SoundCloudClient(config.soundcloud.clientId);
+const type = 'user';
 
 const createUser = async (req, res) => {
   const { permalink } = req.body;
@@ -15,33 +16,33 @@ const createUser = async (req, res) => {
   }
 
   try {
-    const userProfile = await soundCloudClient.fetchUserProfileByUserPermalink(permalink);
     const isUserExists = await elasticsearchClient.exists({
       index,
-      type: 'users',
-      id: userProfile.data.id,
+      type,
+      id: permalink,
     });
 
     if (isUserExists) {
-      res.status(400).send({ message: 'User already exists.' });
-    } else {
-      await elasticsearchClient.create({
-        index,
-        type: 'users',
-        id: userProfile.data.id,
-        body: {
-          permalink: userProfile.data.permalink,
-          username: userProfile.data.username,
-        },
-      });
-      res.status(200).send({
-        id: userProfile.data.id,
-        permalink: userProfile.data.permalink,
-        username: userProfile.data.username,
-      });
+      return res.status(400).send({ message: 'User already exists.' });
     }
-  } catch (e) {
-    res.status(400).send(e);
+
+    const userProfile = await soundCloudClient.fetchUserProfileByUserPermalink(permalink);
+    const documentData = {
+      id: userProfile.data.id,
+      permalink: userProfile.data.permalink,
+      username: userProfile.data.username,
+    };
+
+    await elasticsearchClient.create({
+      index,
+      type,
+      id: permalink,
+      body: documentData,
+    });
+
+    res.status(200).send(documentData);
+  } catch (err) {
+    res.status(400).send(err);
   }
 };
 
