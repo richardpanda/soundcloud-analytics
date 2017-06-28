@@ -1,15 +1,14 @@
-const fs = require('fs');
-
+const { readFile } = require('./util/fs');
 const Parser = require('../src/util/parser');
 
 describe('Parser tests', () => {
-  test('extract user id from user profile html', (done) => {
-    expect.assertions(2);
+  test('extract user id from user profile html', async () => {
+    expect.assertions(1);
 
-    fs.readFile('./test/fake-data/user-profile-page.html', 'utf8', (err, userProfilePage) => {
-      expect(err).toBeNull();
-      expect(Parser.extractUserIdFromUserProfilePage(userProfilePage)).toEqual('69257219');
-      done();
-    });
+    const path = './test/fake-data/user-profile-page.html';
+    const encoding = 'utf8';
+    const userProfilePage = await readFile(path, encoding);
+
+    expect(Parser.extractUserIdFromUserProfilePage(userProfilePage)).toEqual('69257219');
   });
 });

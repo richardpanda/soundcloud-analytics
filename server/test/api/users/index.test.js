@@ -1,12 +1,12 @@
-const fs = require('fs');
 const nock = require('nock');
 const request = require('supertest');
 
+const { id, permalink } = require('../../fake-data/user');
+const userProfileResponse = require('../../fake-data/user-profile-response');
+const { readFile } = require('../../util/fs');
 const app = require('../../../src/app');
 const config = require('../../../src/config');
 const elasticsearchClient = require('../../../src/clients/elasticsearch');
-const { id, permalink } = require('../../fake-data/user');
-const userProfileResponse = require('../../fake-data/user-profile-response');
 
 const { index } = config.elasticsearch;
 const soundCloudClientId = config.soundcloud.clientId;
@@ -14,43 +14,40 @@ const soundCloudClientId = config.soundcloud.clientId;
 describe('Users API tests', () => {
   describe('POST /api/users', () => {
     beforeEach(async () => {
-      try {
-        const isIndexExists = await elasticsearchClient.indices.exists({ index });
-        if (isIndexExists) {
-          await elasticsearchClient.indices.delete({ index });
-        }
-        return;
-      } catch (e) {
-        return e;
+      const isIndexExists = await elasticsearchClient.indices.exists({ index });
+      if (isIndexExists) {
+        await elasticsearchClient.indices.delete({ index });
       }
     });
 
-    test('create SoundCloud user', (done) => {
+    test('create SoundCloud user', async (done) => {
       expect.assertions(3);
 
-      fs.readFile('./test/fake-data/user-profile-page.html', 'utf8', (err, userProfilePage) => {
-        nock('https://soundcloud.com')
-          .get(`/${permalink}`)
-          .reply(200, userProfilePage)
+      const path = './test/fake-data/user-profile-page.html';
+      const encoding = 'utf8';
+      const userProfilePage = await readFile(path, encoding);
 
-        nock('http://api.soundcloud.com')
-          .get(`/users/${id}`)
-          .query({ client_id: soundCloudClientId })
-          .reply(200, userProfileResponse);
+      nock('https://soundcloud.com')
+        .get(`/${permalink}`)
+        .reply(200, userProfilePage)
 
-        request(app)
-          .post('/api/users')
-          .send({ permalink })
-          .end((err, res) => {
-            if (err) {
-              done(err);
-            }
-            expect(res.status).toEqual(200);
-            expect(res.body.permalink).toEqual(permalink);
-            expect(res.body.username).toEqual(userProfileResponse.username);
-            done();
-          });
-      });
+      nock('http://api.soundcloud.com')
+        .get(`/users/${id}`)
+        .query({ client_id: soundCloudClientId })
+        .reply(200, userProfileResponse);
+
+      request(app)
+        .post('/api/users')
+        .send({ permalink })
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          }
+          expect(res.status).toEqual(200);
+          expect(res.body.permalink).toEqual(permalink);
+          expect(res.body.username).toEqual(userProfileResponse.username);
+          done();
+        });
     });
   });
 });
