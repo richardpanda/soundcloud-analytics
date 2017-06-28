@@ -22,7 +22,7 @@ describe('Users API tests', () => {
     });
 
     test('create SoundCloud user', async (done) => {
-      expect.assertions(3);
+      expect.assertions(4);
 
       const userProfilePage = await readUserProfilePage();
 
@@ -39,9 +39,7 @@ describe('Users API tests', () => {
         .post('/api/users')
         .send({ permalink })
         .end((err, res) => {
-          if (err) {
-            done(err);
-          }
+          expect(err).toBeNull();
           expect(res.status).toEqual(200);
           expect(res.body.permalink).toEqual(permalink);
           expect(res.body.username).toEqual(userProfileResponse.username);
@@ -50,14 +48,12 @@ describe('Users API tests', () => {
     });
 
     test('request body must contain permalink', (done) => {
-      expect.assertions(2);
+      expect.assertions(3);
 
       request(app)
         .post('/api/users')
         .end((err, res) => {
-          if (err) {
-            done(err);
-          }
+          expect(err).toBeNull();
           expect(res.status).toEqual(400);
           expect(res.body.message).toEqual('Permalink is missing.');
           done();
@@ -65,7 +61,7 @@ describe('Users API tests', () => {
     });
 
     test('prevent creating duplicate users', async (done) => {
-      expect.assertions(3);
+      expect.assertions(5);
 
       const userProfilePage = await readUserProfilePage();
 
@@ -82,18 +78,14 @@ describe('Users API tests', () => {
         .post('/api/users')
         .send({ permalink })
         .end((err, res) => {
-          if (err) {
-            done(err);
-          }
+          expect(err).toBeNull();
           expect(res.status).toEqual(200);
 
           request(app)
             .post('/api/users')
             .send({ permalink })
             .end((err, res) => {
-              if (err) {
-                done(err);
-              }
+              expect(err).toBeNull();
               expect(res.status).toEqual(400);
               expect(res.body.message).toEqual('User already exists.');
               done();
