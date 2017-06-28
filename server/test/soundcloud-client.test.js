@@ -8,7 +8,7 @@ const { clientId } = require('../src/config/soundcloud');
 const soundCloudClient = new SoundCloudClient(clientId);
 
 describe('SoundCloud client tests', () => {
-  test('fetch user profile by user id', () => {
+  test('fetch user profile by user id', async () => {
     expect.assertions(1);
 
     nock('http://api.soundcloud.com')
@@ -16,17 +16,17 @@ describe('SoundCloud client tests', () => {
       .query({ client_id: clientId })
       .reply(200);
 
-    return expect(soundCloudClient.fetchUserProfileByUserId(id)).resolves.toBeDefined();
+    await expect(soundCloudClient.fetchUserProfileByUserId(id)).resolves.toBeDefined();
   });
 
-  test('fetch user profile page by user permalink', () => {
+  test('fetch user profile page by user permalink', async () => {
     expect.assertions(1);
 
     nock('https://soundcloud.com')
       .get(`/${permalink}`)
       .reply(200);
 
-    return expect(soundCloudClient.fetchUserProfilePageByUserPermalink(permalink)).resolves.toBeDefined();
+    await expect(soundCloudClient.fetchUserProfilePageByUserPermalink(permalink)).resolves.toBeDefined();
   });
 
   test('fetch user profile by user permalink', async () => {
