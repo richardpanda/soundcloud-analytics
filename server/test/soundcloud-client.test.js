@@ -20,7 +20,9 @@ describe('SoundCloud client tests', () => {
       .query({ client_id: clientId })
       .reply(200);
 
-    await expect(soundCloudClient.fetchUserProfileByUserId(id)).resolves.toBeDefined();
+    await expect(soundCloudClient.fetchUserProfileByUserId(id))
+      .resolves
+      .toBeDefined();
   });
 
   test('fetch user profile with an invalid user id', async () => {
@@ -43,7 +45,9 @@ describe('SoundCloud client tests', () => {
       .get(`/${permalink}`)
       .reply(200);
 
-    await expect(soundCloudClient.fetchUserProfilePageByUserPermalink(permalink)).resolves.toBeDefined();
+    await expect(soundCloudClient.fetchUserProfilePageByUserPermalink(permalink))
+      .resolves
+      .toBeDefined();
   });
 
   test('fetch user profile with an invalid user permalink', async () => {
@@ -72,6 +76,8 @@ describe('SoundCloud client tests', () => {
       .query({ client_id: clientId })
       .reply(200);
 
-    await expect(soundCloudClient.fetchUserProfileByUserPermalink(permalink)).resolves.toBeDefined();
+    await expect(soundCloudClient.fetchUserProfileByUserPermalink(permalink))
+      .resolves
+      .toBeDefined();
   });
 });
