@@ -63,5 +63,42 @@ describe('Users API tests', () => {
           done();
         });
     });
+
+    test('prevent creating duplicate users', async (done) => {
+      expect.assertions(3);
+
+      const userProfilePage = await readUserProfilePage();
+
+      nock('https://soundcloud.com')
+        .get(`/${permalink}`)
+        .reply(200, userProfilePage)
+
+      nock('http://api.soundcloud.com')
+        .get(`/users/${id}`)
+        .query({ client_id: soundCloudClientId })
+        .reply(200, userProfileResponse);
+
+      request(app)
+        .post('/api/users')
+        .send({ permalink })
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          }
+          expect(res.status).toEqual(200);
+
+          request(app)
+            .post('/api/users')
+            .send({ permalink })
+            .end((err, res) => {
+              if (err) {
+                done(err);
+              }
+              expect(res.status).toEqual(400);
+              expect(res.body.message).toEqual('User already exists.');
+              done();
+            });
+        });
+    });
   });
 });
