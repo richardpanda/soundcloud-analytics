@@ -1,7 +1,7 @@
 const nock = require('nock');
 
 const { id, permalink } = require('./fake-data/user');
-const { readFile } = require('./util/fs');
+const { readUserProfilePage } = require('./util/file-reader');
 const SoundCloudClient = require('../src/clients/soundcloud');
 const { clientId } = require('../src/config/soundcloud');
 
@@ -32,9 +32,7 @@ describe('SoundCloud client tests', () => {
   test('fetch user profile by user permalink', async () => {
     expect.assertions(1);
 
-    const path = './test/fake-data/user-profile-page.html';
-    const encoding = 'utf8';
-    const userProfilePage = await readFile(path, encoding);
+    const userProfilePage = await readUserProfilePage();
 
     nock('https://soundcloud.com')
       .get(`/${permalink}`)

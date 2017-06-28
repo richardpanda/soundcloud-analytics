@@ -3,7 +3,7 @@ const request = require('supertest');
 
 const { id, permalink } = require('../../fake-data/user');
 const userProfileResponse = require('../../fake-data/user-profile-response');
-const { readFile } = require('../../util/fs');
+const { readUserProfilePage } = require('../../util/file-reader');
 const app = require('../../../src/app');
 const config = require('../../../src/config');
 const elasticsearchClient = require('../../../src/clients/elasticsearch');
@@ -23,9 +23,7 @@ describe('Users API tests', () => {
     test('create SoundCloud user', async (done) => {
       expect.assertions(3);
 
-      const path = './test/fake-data/user-profile-page.html';
-      const encoding = 'utf8';
-      const userProfilePage = await readFile(path, encoding);
+      const userProfilePage = await readUserProfilePage();
 
       nock('https://soundcloud.com')
         .get(`/${permalink}`)
