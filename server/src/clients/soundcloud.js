@@ -7,23 +7,35 @@ class SoundCloudClient {
     this.clientId = clientId;
   }
 
-  fetchUserProfileByUserId(userId) {
+  async fetchUserProfileByUserId(userId) {
     const url = `http://api.soundcloud.com/users/${userId}?client_id=${this.clientId}`;
-    return axios.get(url);
+
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (err) {
+      throw new Error('User profile page not found.');
+    }
   }
 
-  fetchUserProfilePageByUserPermalink(permalink) {
+  async fetchUserProfilePageByUserPermalink(permalink) {
     const url = `https://soundcloud.com/${permalink}`;
-    return axios.get(url);
+
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (err) {
+      throw new Error('User profile page not found.');
+    }
   }
 
   async fetchUserProfileByUserPermalink(permalink) {
     try {
-      const userProfilePageResponse = await this.fetchUserProfilePageByUserPermalink(permalink);
-      const userId = Parser.extractUserIdFromUserProfilePage(userProfilePageResponse.data);
+      const userProfilePage = await this.fetchUserProfilePageByUserPermalink(permalink);
+      const userId = Parser.extractUserIdFromUserProfilePage(userProfilePage);
       return await this.fetchUserProfileByUserId(userId);
-    } catch (e) {
-      throw e;
+    } catch (err) {
+      throw err;
     }
   }
 }

@@ -28,9 +28,9 @@ const createUser = async (req, res) => {
 
     const userProfile = await soundCloudClient.fetchUserProfileByUserPermalink(permalink);
     const documentData = {
-      id: userProfile.data.id,
-      permalink: userProfile.data.permalink,
-      username: userProfile.data.username,
+      id: userProfile.id,
+      permalink: userProfile.permalink,
+      username: userProfile.username,
     };
 
     await elasticsearchClient.create({
@@ -42,7 +42,7 @@ const createUser = async (req, res) => {
 
     res.status(200).send(documentData);
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send({ message: err.message });
   }
 };
 
