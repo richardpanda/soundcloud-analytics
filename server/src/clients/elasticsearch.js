@@ -1,9 +1,11 @@
-import elasticsearch from 'elasticsearch';
+import { Client } from 'elasticsearch';
 
-import config from '../config';
-
-const { host, log } = config.elasticsearch;
-const elasticsearchClient = elasticsearch.Client({
+const { ELASTICSEARCH_ADDRESS, ELASTICSEARCH_PORT, LOGGING } = process.env;
+const host = `${ELASTICSEARCH_ADDRESS}:${ELASTICSEARCH_PORT}`;
+const log = LOGGING === 'true'
+  ? 'trace'
+  : '';
+const elasticsearchClient = Client({
   host,
   log,
 });

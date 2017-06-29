@@ -10,11 +10,11 @@ import {
 import userProfileResponse from '../../fake-data/user-profile-response';
 import { readUserProfilePage } from '../../util/file-reader';
 import app from '../../../src/app';
-import config from '../../../src/config';
 import elasticsearchClient from '../../../src/clients/elasticsearch';
 
-const { index } = config.elasticsearch;
-const soundCloudClientId = config.soundcloud.clientId;
+const { ELASTICSEARCH_INDEX, SOUNDCLOUD_CLIENT_ID } = process.env;
+const index = ELASTICSEARCH_INDEX;
+const soundCloudClientId = SOUNDCLOUD_CLIENT_ID;
 
 describe('Users API tests', () => {
   describe('POST /api/users', () => {
