@@ -1,6 +1,6 @@
-const elasticsearch = require('elasticsearch');
+import elasticsearch from 'elasticsearch';
 
-const config = require('../config');
+import config from '../config';
 
 const { host, log } = config.elasticsearch;
 const elasticsearchClient = elasticsearch.Client({
@@ -8,4 +8,4 @@ const elasticsearchClient = elasticsearch.Client({
   log,
 });
 
-module.exports = elasticsearchClient;
+export default elasticsearchClient;

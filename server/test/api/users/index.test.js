@@ -1,17 +1,17 @@
-const nock = require('nock');
-const request = require('supertest');
+import nock from 'nock';
+import request from 'supertest';
 
-const {
+import {
   avatarUrl,
   id,
   invalidPermalink,
   permalink,
-} = require('../../fake-data/user');
-const userProfileResponse = require('../../fake-data/user-profile-response');
-const { readUserProfilePage } = require('../../util/file-reader');
-const app = require('../../../src/app');
-const config = require('../../../src/config');
-const elasticsearchClient = require('../../../src/clients/elasticsearch');
+} from '../../fake-data/user';
+import userProfileResponse from '../../fake-data/user-profile-response';
+import { readUserProfilePage } from '../../util/file-reader';
+import app from '../../../src/app';
+import config from '../../../src/config';
+import elasticsearchClient from '../../../src/clients/elasticsearch';
 
 const { index } = config.elasticsearch;
 const soundCloudClientId = config.soundcloud.clientId;

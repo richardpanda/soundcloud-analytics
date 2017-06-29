@@ -7,7 +7,7 @@ const log = process.env.NODE_ENV === 'test'
   ? ''
   : 'trace';
 
-module.exports = {
+export default {
   host,
   index,
   log,

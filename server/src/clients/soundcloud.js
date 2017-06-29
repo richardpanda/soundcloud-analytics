@@ -1,6 +1,6 @@
-const axios = require('axios');
+import axios from 'axios';
 
-const Parser = require('../util/parser');
+import Parser from '../util/parser';
 
 class SoundCloudClient {
   constructor(clientId) {
@@ -48,4 +48,4 @@ class SoundCloudClient {
   }
 }
 
-module.exports = SoundCloudClient;
+export default SoundCloudClient;

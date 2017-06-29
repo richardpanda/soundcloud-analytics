@@ -1,8 +1,8 @@
-const elasticsearch = require('./elasticsearch');
-const server = require('./server');
-const soundcloud = require('./soundcloud');
+import elasticsearch from './elasticsearch';
+import server from './server';
+import soundcloud from './soundcloud';
 
-module.exports = {
+export default {
   elasticsearch,
   server,
   soundcloud,

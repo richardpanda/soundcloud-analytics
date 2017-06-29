@@ -4,6 +4,6 @@ if (process.env.NODE_ENV === 'test') {
   port = 4001;
 }
 
-module.exports = {
+export default {
   port,
 };

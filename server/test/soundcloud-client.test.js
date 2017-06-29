@@ -1,9 +1,9 @@
-const nock = require('nock');
+import nock from 'nock';
 
-const { id, invalidId, invalidPermalink, permalink } = require('./fake-data/user');
-const { readUserProfilePage } = require('./util/file-reader');
-const SoundCloudClient = require('../src/clients/soundcloud');
-const { clientId } = require('../src/config/soundcloud');
+import { id, invalidId, invalidPermalink, permalink } from './fake-data/user';
+import { readUserProfilePage } from './util/file-reader';
+import SoundCloudClient from '../src/clients/soundcloud';
+import { clientId } from '../src/config/soundcloud';
 
 const soundCloudClient = new SoundCloudClient(clientId);
 

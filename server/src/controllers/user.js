@@ -1,8 +1,8 @@
-const elasticsearch = require('elasticsearch');
+import elasticsearch from 'elasticsearch';
 
-const config = require('../config');
-const elasticsearchClient = require('../clients/elasticsearch');
-const SoundCloudClient = require('../clients/soundcloud');
+import config from '../config';
+import elasticsearchClient from '../clients/elasticsearch';
+import SoundCloudClient from '../clients/soundcloud';
 
 const { index } = config.elasticsearch;
 const soundCloudClient = new SoundCloudClient(config.soundcloud.clientId);
@@ -48,6 +48,6 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   createUser,
 };
