@@ -2,10 +2,9 @@ import nock from 'nock';
 
 import { id, invalidId, invalidPermalink, permalink } from './fake-data/user';
 import { readUserProfilePage } from './util/file-reader';
-import SoundCloudClient from '../src/clients/soundcloud';
+import { soundCloudClient } from '../src/clients';
 
 const clientId = process.env.SOUNDCLOUD_CLIENT_ID;
-const soundCloudClient = new SoundCloudClient(clientId);
 
 describe('SoundCloud client tests', () => {
   beforeEach(() => {

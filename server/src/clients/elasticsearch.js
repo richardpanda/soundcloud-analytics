@@ -5,9 +5,8 @@ const host = `${ELASTICSEARCH_ADDRESS}:${ELASTICSEARCH_PORT}`;
 const log = LOGGING === 'true'
   ? 'trace'
   : '';
-const elasticsearchClient = Client({
+
+export default Client({
   host,
   log,
 });
-
-export default elasticsearchClient;

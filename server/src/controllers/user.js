@@ -1,11 +1,8 @@
 import elasticsearch from 'elasticsearch';
 
-import elasticsearchClient from '../clients/elasticsearch';
-import SoundCloudClient from '../clients/soundcloud';
+import { elasticsearchClient, soundCloudClient } from '../clients';
 
-const { ELASTICSEARCH_INDEX, SOUNDCLOUD_CLIENT_ID } = process.env;
-const soundCloudClient = new SoundCloudClient(process.env.SOUNDCLOUD_CLIENT_ID);
-const index = ELASTICSEARCH_INDEX;
+const index = process.env.ELASTICSEARCH_INDEX;
 const type = 'user';
 
 const createUser = async (req, res) => {

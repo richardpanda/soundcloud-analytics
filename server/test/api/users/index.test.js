@@ -10,7 +10,7 @@ import {
 import userProfileResponse from '../../fake-data/user-profile-response';
 import { readUserProfilePage } from '../../util/file-reader';
 import app from '../../../src/app';
-import elasticsearchClient from '../../../src/clients/elasticsearch';
+import { elasticsearchClient, soundCloudClient } from '../../../src/clients';
 
 const { ELASTICSEARCH_INDEX, SOUNDCLOUD_CLIENT_ID } = process.env;
 const index = ELASTICSEARCH_INDEX;
