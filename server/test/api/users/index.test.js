@@ -1,7 +1,7 @@
 const nock = require('nock');
 const request = require('supertest');
 
-const { id, permalink } = require('../../fake-data/user');
+const { id, invalidPermalink, permalink } = require('../../fake-data/user');
 const userProfileResponse = require('../../fake-data/user-profile-response');
 const { readUserProfilePage } = require('../../util/file-reader');
 const app = require('../../../src/app');
@@ -67,7 +67,7 @@ describe('Users API tests', () => {
 
       nock('https://soundcloud.com')
         .get(`/${permalink}`)
-        .reply(200, userProfilePage)
+        .reply(200, userProfilePage);
 
       nock('http://api.soundcloud.com')
         .get(`/users/${id}`)
@@ -90,6 +90,49 @@ describe('Users API tests', () => {
               expect(res.body.message).toEqual('User already exists.');
               done();
             });
+        });
+    });
+
+    test('permalink must be valid', (done) => {
+      expect.assertions(3);
+
+      nock('https://soundcloud.com')
+        .get(`/${permalink}`)
+        .reply(404);
+
+      request(app)
+        .post('/api/users')
+        .send({ permalink: invalidPermalink })
+        .end((err, res) => {
+          expect(err).toBeNull();
+          expect(res.status).toEqual(404);
+          expect(res.body.message).toBe('Unable to find user profile page.');
+          done();
+        });
+    });
+
+    test('user id must be valid', async (done) => {
+      expect.assertions(3);
+
+      const userProfilePage = await readUserProfilePage();
+
+      nock('https://soundcloud.com')
+        .get(`/${permalink}`)
+        .reply(200, userProfilePage);
+
+      nock('http://api.soundcloud.com')
+        .get(`/users/${id}`)
+        .query({ client_id: soundCloudClientId })
+        .reply(404);
+
+      request(app)
+        .post('/api/users')
+        .send({ permalink })
+        .end((err, res) => {
+          expect(err).toBeNull();
+          expect(res.status).toEqual(404);
+          expect(res.body.message).toBe('Unable to find user profile page.');
+          done();
         });
     });
   });
