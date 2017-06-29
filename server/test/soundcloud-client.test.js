@@ -35,7 +35,11 @@ describe('SoundCloud client tests', () => {
 
     await expect(soundCloudClient.fetchUserProfileByUserId(invalidId))
       .rejects
-      .toEqual(new Error('User profile page not found.'));
+      .toEqual({
+        name: 'UserProfilePageNotFound',
+        message: 'Unable to find user profile page.',
+        status: 404,
+      });
   });
 
   test('fetch user profile page by user permalink', async () => {
@@ -59,7 +63,11 @@ describe('SoundCloud client tests', () => {
 
     await expect(soundCloudClient.fetchUserProfilePageByUserPermalink(permalink))
       .rejects
-      .toEqual(new Error('User profile page not found.'));
+      .toEqual({
+        name: 'UserProfilePageNotFound',
+        message: 'Unable to find user profile page.',
+        status: 404,
+      });
   });
 
   test('fetch user profile by user permalink', async () => {

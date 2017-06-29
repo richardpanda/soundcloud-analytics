@@ -42,7 +42,8 @@ const createUser = async (req, res) => {
 
     res.status(200).send(documentData);
   } catch (err) {
-    res.status(400).send({ message: err.message });
+    const { message, status } = err;
+    res.status(status).send({ message });
   }
 };
 

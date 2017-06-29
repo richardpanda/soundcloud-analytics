@@ -14,7 +14,11 @@ class SoundCloudClient {
       const response = await axios.get(url);
       return response.data;
     } catch (err) {
-      throw new Error('User profile page not found.');
+      throw {
+        name: 'UserProfilePageNotFound',
+        message: 'Unable to find user profile page.',
+        status: 404,
+      };
     }
   }
 
@@ -25,7 +29,11 @@ class SoundCloudClient {
       const response = await axios.get(url);
       return response.data;
     } catch (err) {
-      throw new Error('User profile page not found.');
+      throw {
+        name: 'UserProfilePageNotFound',
+        message: 'Unable to find user profile page.',
+        status: 404,
+      };
     }
   }
 
