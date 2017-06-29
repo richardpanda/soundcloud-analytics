@@ -1,7 +1,12 @@
 const nock = require('nock');
 const request = require('supertest');
 
-const { id, invalidPermalink, permalink } = require('../../fake-data/user');
+const {
+  avatarUrl,
+  id,
+  invalidPermalink,
+  permalink,
+} = require('../../fake-data/user');
 const userProfileResponse = require('../../fake-data/user-profile-response');
 const { readUserProfilePage } = require('../../util/file-reader');
 const app = require('../../../src/app');
@@ -22,7 +27,7 @@ describe('Users API tests', () => {
     });
 
     test('create SoundCloud user', async (done) => {
-      expect.assertions(4);
+      expect.assertions(5);
 
       const userProfilePage = await readUserProfilePage();
 
@@ -41,6 +46,7 @@ describe('Users API tests', () => {
         .end((err, res) => {
           expect(err).toBeNull();
           expect(res.status).toEqual(200);
+          expect(res.body.avatar_url).toEqual(userProfileResponse.avatar_url);
           expect(res.body.permalink).toEqual(permalink);
           expect(res.body.username).toEqual(userProfileResponse.username);
           done();

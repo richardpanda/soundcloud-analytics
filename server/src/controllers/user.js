@@ -28,6 +28,7 @@ const createUser = async (req, res) => {
 
     const userProfile = await soundCloudClient.fetchUserProfileByUserPermalink(permalink);
     const documentData = {
+      avatar_url: userProfile.avatar_url,
       id: userProfile.id,
       permalink: userProfile.permalink,
       username: userProfile.username,
