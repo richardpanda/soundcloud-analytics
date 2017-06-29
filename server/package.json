@@ -3,7 +3,9 @@
     "testEnvironment": "node"
   },
   "scripts": {
-    "start": "NODE_ENV=dev node_modules/.bin/nodemon ./src/app.js --exec babel-node",
+    "babel": "node_modules/.bin/babel src -w --out-dir dist",
+    "nodemon": "node_modules/.bin/nodemon -r regenerator-runtime/runtime dist/app.js",
+    "start": "npm run babel & NODE_ENV=dev npm run nodemon",
     "test": "NODE_ENV=test node_modules/.bin/jest --colors --verbose"
   },
   "dependencies": {
@@ -17,11 +19,12 @@
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-jest": "^20.0.3",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
+    "babel-plugin-transform-regenerator": "^6.24.1",
+    "babel-preset-env": "^1.5.2",
     "jest": "^20.0.4",
     "nock": "^9.0.13",
     "nodemon": "^1.11.0",
+    "regenerator-runtime": "^0.10.5",
     "supertest": "^3.0.0"
   }
 }
