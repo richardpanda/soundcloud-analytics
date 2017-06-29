@@ -1,3 +1,4 @@
-.env*
+.env
+.env.test
 dist
 node_modules
