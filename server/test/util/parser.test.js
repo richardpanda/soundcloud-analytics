@@ -1,5 +1,5 @@
-import { readUserProfilePage } from './util/file-reader';
-import Parser from '../src/util/parser';
+import { readUserProfilePage } from './file-reader';
+import { Parser } from '../../src/util';
 
 describe('Parser tests', () => {
   test('extract user id from user profile html', async () => {

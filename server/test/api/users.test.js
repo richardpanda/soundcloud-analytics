@@ -6,11 +6,11 @@ import {
   id,
   invalidPermalink,
   permalink,
-} from '../../fake-data/user';
-import userProfileResponse from '../../fake-data/user-profile-response';
-import { readUserProfilePage } from '../../util/file-reader';
-import app from '../../../src/app';
-import { elasticsearchClient, soundCloudClient } from '../../../src/clients';
+} from '../fake-data/user';
+import userProfileResponse from '../fake-data/user-profile-response';
+import { readUserProfilePage } from '../util/file-reader';
+import app from '../../src/app';
+import { elasticsearchClient, soundCloudClient } from '../../src/clients';
 
 const { ELASTICSEARCH_INDEX, SOUNDCLOUD_CLIENT_ID } = process.env;
 const index = ELASTICSEARCH_INDEX;
