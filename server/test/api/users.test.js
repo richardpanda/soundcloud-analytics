@@ -8,7 +8,7 @@ import {
   permalink,
 } from '../fake-data/user';
 import userProfileResponse from '../fake-data/user-profile-response';
-import { readUserProfilePage } from '../util/file-reader';
+import { readUserProfilePage } from '../utils/file-reader';
 import app from '../../src/app';
 import { elasticsearchClient, soundCloudClient } from '../../src/clients';
 

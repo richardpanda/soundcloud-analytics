@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import Parser from '../util/parser';
+import { Parser } from '../utils';
 
 const { SOUNDCLOUD_CLIENT_ID } = process.env;
 
