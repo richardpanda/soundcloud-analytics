@@ -11,6 +11,12 @@ const User = postgresClient.define('user', {
     type: STRING,
     allowNull: false,
     unique: true,
+  }
+}, {
+  hooks: {
+    beforeCreate: (user) => {
+      user.permalink = user.permalink.toLowerCase();
+    },
   },
 });
 
