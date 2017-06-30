@@ -1,8 +1,4 @@
-const { USER_PROFILE_PAGE_PATH, ENCODING } = require('./constants');
-const { readFile } = require('./fs');
+import { USER_PROFILE_PAGE_PATH, ENCODING } from './constants';
+import { readFile } from './fs';
 
-const readUserProfilePage = () => readFile(USER_PROFILE_PAGE_PATH, ENCODING);
-
-module.exports = {
-  readUserProfilePage,
-};
+export const readUserProfilePage = () => readFile(USER_PROFILE_PAGE_PATH, ENCODING);
