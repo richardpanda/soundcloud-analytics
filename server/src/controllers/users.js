@@ -1,47 +1,53 @@
 import elasticsearch from 'elasticsearch';
 
 import { elasticsearchClient, soundCloudClient } from '../clients';
+import { User } from '../models';
 
-const index = process.env.ELASTICSEARCH_INDEX;
-const type = 'user';
+const { ELASTICSEARCH_INDEX, ELASTICSEARCH_TYPE } = process.env;
+const index = ELASTICSEARCH_INDEX;
+const type = ELASTICSEARCH_TYPE;
 
 const createUser = async (req, res) => {
   const { permalink } = req.body;
 
   if (!permalink) {
-    return res.status(400).send({ message: 'Permalink is missing.' });
+    return res.status(400).json({ message: 'Permalink is missing.' });
   }
 
   try {
-    const isUserExists = await elasticsearchClient.exists({
-      index,
-      type,
-      id: permalink,
-    });
+    const user = await User.findOne({ where: { permalink }});
 
-    if (isUserExists) {
-      return res.status(400).send({ message: 'User already exists.' });
+    if (user) {
+      return res.status(400).json({ message: 'User already exists.' });
     }
 
     const userProfile = await soundCloudClient.fetchUserProfileByUserPermalink(permalink);
-    const documentData = {
-      avatar_url: userProfile.avatar_url,
-      id: userProfile.id,
-      permalink: userProfile.permalink,
-      username: userProfile.username,
-    };
+    const id = userProfile.id;
 
-    await elasticsearchClient.create({
-      index,
-      type,
-      id: permalink,
-      body: documentData,
-    });
+    await Promise.all([
+      User.create({ id, permalink }),
+      elasticsearchClient.create({
+        index,
+        type,
+        id,
+        body: {
+          suggest: {
+            input: permalink,
+          },
+        },
+        refresh: "true",
+      })
+    ]);
 
-    res.status(200).send(documentData);
+    res.status(200).json({ id, permalink });
   } catch (err) {
     const { message, status } = err;
-    res.status(status).send({ message });
+
+    if (message && status) {
+      return res.status(status).json({ message });
+    }
+    
+    res.status(400).json({ message });
   }
 };
 
