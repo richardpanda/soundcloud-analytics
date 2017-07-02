@@ -18,16 +18,16 @@ describe('Users API tests', () => {
     beforeEach(async () => {
       nock.cleanAll();
 
-      const resetPostgresUserTable = User.sync({ force: true });
+      const resetPostgresUsersTable = User.sync({ force: true });
       const isIndexExists = await elasticsearchClient.indices.exists({ index });
 
       if (isIndexExists) {
         await Promise.all([
-          resetPostgresUserTable,
+          resetPostgresUsersTable,
           elasticsearchClient.indices.delete({ index })
         ]);
       } else {
-        await resetPostgresUserTable;
+        await resetPostgresUsersTable;
       }
     });
 
