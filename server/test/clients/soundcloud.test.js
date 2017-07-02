@@ -1,6 +1,6 @@
 import nock from 'nock';
 
-import { id, invalidId, invalidPermalink, permalink } from '../fake-data/user';
+import { id, invalidId, invalidPermalink, permalink } from '../data/user';
 import { readUserProfilePage } from '../utils/file-reader';
 import { soundCloudClient } from '../../src/clients';
 

@@ -6,8 +6,8 @@ import {
   id,
   invalidPermalink,
   permalink,
-} from '../fake-data/user';
-import userProfileResponse from '../fake-data/user-profile-response';
+} from '../data/user';
+import userProfileResponse from '../data/user-profile-response';
 import { readUserProfilePage } from '../utils/file-reader';
 import app from '../../src/app';
 import { elasticsearchClient, soundCloudClient } from '../../src/clients';

@@ -1,8 +1,8 @@
 import { createRequest, createResponse } from 'node-mocks-http';
 import nock from 'nock';
 
-import { id, permalink } from '../fake-data/user';
-import userProfileResponse from '../fake-data/user-profile-response';
+import { id, permalink } from '../data/user';
+import userProfileResponse from '../data/user-profile-response';
 import { readUserProfilePage } from '../utils/file-reader';
 
 const {
