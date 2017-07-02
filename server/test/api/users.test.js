@@ -1,33 +1,70 @@
 import nock from 'nock';
 import request from 'supertest';
 
-import {
-  avatarUrl,
-  id,
-  invalidPermalink,
-  permalink,
-} from '../data/user';
+import { id, permalink } from '../data/user';
 import userProfileResponse from '../data/user-profile-response';
 import { readUserProfilePage } from '../utils/file-reader';
-import app from '../../src/app';
-import { elasticsearchClient, soundCloudClient } from '../../src/clients';
+import app from '../../src';
+import { elasticsearchClient } from '../../src/clients';
+import { User } from '../../src/models';
 
 const { ELASTICSEARCH_INDEX, SOUNDCLOUD_CLIENT_ID } = process.env;
 const index = ELASTICSEARCH_INDEX;
-const soundCloudClientId = SOUNDCLOUD_CLIENT_ID;
 
 describe('Users API tests', () => {
   describe('POST /api/users', () => {
+    const endpoint = '/api/users';
+
     beforeEach(async () => {
       nock.cleanAll();
+
+      const resetPostgresUserTable = User.sync({ force: true });
       const isIndexExists = await elasticsearchClient.indices.exists({ index });
+
       if (isIndexExists) {
-        await elasticsearchClient.indices.delete({ index });
+        await Promise.all([
+          resetPostgresUserTable,
+          elasticsearchClient.indices.delete({ index })
+        ]);
+      } else {
+        await resetPostgresUserTable;
       }
     });
 
-    test('create SoundCloud user', async (done) => {
-      expect.assertions(5);
+    test('request body must contain permalink', async () => {
+      expect.assertions(2);
+
+      const response = await request(app).post(endpoint);
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toBe('Permalink is missing.');
+    });
+
+    test('prevent creating duplicate users', async () => {
+      await User.create({ id, permalink });
+
+      const response = await request(app).post(endpoint).send({ permalink });
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toBe('User already exists.');
+    });
+
+    test('permalink must be valid', async () => {
+      expect.assertions(2);
+
+      nock('https://soundcloud.com')
+        .get(`/${permalink}`)
+        .reply(404);
+
+      const response = await request(app).post(endpoint).send({ permalink });
+
+      expect(response.status).toBe(404);
+      expect(response.body.message).toBe('Unable to find user profile page.');
+    });
+
+
+    test('create SoundCloud user', async () => {
+      expect.assertions(3);
 
       const userProfilePage = await readUserProfilePage();
 
@@ -37,109 +74,14 @@ describe('Users API tests', () => {
 
       nock('http://api.soundcloud.com')
         .get(`/users/${id}`)
-        .query({ client_id: soundCloudClientId })
+        .query({ client_id: SOUNDCLOUD_CLIENT_ID })
         .reply(200, userProfileResponse);
 
-      request(app)
-        .post('/api/users')
-        .send({ permalink })
-        .end((err, res) => {
-          expect(err).toBeNull();
-          expect(res.status).toEqual(200);
-          expect(res.body.avatar_url).toEqual(userProfileResponse.avatar_url);
-          expect(res.body.permalink).toEqual(permalink);
-          expect(res.body.username).toEqual(userProfileResponse.username);
-          done();
-        });
-    });
+      const response = await request(app).post(endpoint).send({ permalink });
 
-    test('request body must contain permalink', (done) => {
-      expect.assertions(3);
-
-      request(app)
-        .post('/api/users')
-        .end((err, res) => {
-          expect(err).toBeNull();
-          expect(res.status).toEqual(400);
-          expect(res.body.message).toEqual('Permalink is missing.');
-          done();
-        });
-    });
-
-    test('prevent creating duplicate users', async (done) => {
-      expect.assertions(5);
-
-      const userProfilePage = await readUserProfilePage();
-
-      nock('https://soundcloud.com')
-        .get(`/${permalink}`)
-        .reply(200, userProfilePage);
-
-      nock('http://api.soundcloud.com')
-        .get(`/users/${id}`)
-        .query({ client_id: soundCloudClientId })
-        .reply(200, userProfileResponse);
-
-      request(app)
-        .post('/api/users')
-        .send({ permalink })
-        .end((err, res) => {
-          expect(err).toBeNull();
-          expect(res.status).toEqual(200);
-
-          request(app)
-            .post('/api/users')
-            .send({ permalink })
-            .end((err, res) => {
-              expect(err).toBeNull();
-              expect(res.status).toEqual(400);
-              expect(res.body.message).toEqual('User already exists.');
-              done();
-            });
-        });
-    });
-
-    test('permalink must be valid', (done) => {
-      expect.assertions(3);
-
-      nock('https://soundcloud.com')
-        .get(`/${permalink}`)
-        .reply(404);
-
-      request(app)
-        .post('/api/users')
-        .send({ permalink: invalidPermalink })
-        .end((err, res) => {
-          expect(err).toBeNull();
-          expect(res.status).toEqual(404);
-          expect(res.body.message).toBe('Unable to find user profile page.');
-          done();
-        });
-    });
-
-    test('user id must be valid', async (done) => {
-      expect.assertions(3);
-
-      const userProfilePage = await readUserProfilePage();
-
-      nock('https://soundcloud.com')
-        .get(`/${permalink}`)
-        .reply(200, userProfilePage);
-
-      nock('http://api.soundcloud.com')
-        .get(`/users/${id}`)
-        .query({ client_id: soundCloudClientId })
-        .reply(404);
-
-      request(app)
-        .post('/api/users')
-        .send({ permalink })
-        .end((err, res) => {
-          expect(err).toBeNull();
-          expect(res.status).toEqual(404);
-          expect(res.body.message).toBe('Unable to find user profile page.');
-          done();
-        });
+      expect(response.status).toBe(200);
+      expect(response.body.id).toBe(id);
+      expect(response.body.permalink).toBe(permalink);
     });
   });
 });
