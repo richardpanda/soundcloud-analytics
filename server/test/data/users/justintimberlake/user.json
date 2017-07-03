@@ -1,0 +1,36 @@
+{
+    "id": 16948903,
+    "kind": "user",
+    "permalink": "justintimberlake",
+    "username": "Justin Timberlake",
+    "last_modified": "2016/03/27 09:15:30 +0000",
+    "uri": "https://api.soundcloud.com/users/16948903",
+    "permalink_url": "http://soundcloud.com/justintimberlake",
+    "avatar_url": "https://i1.sndcdn.com/avatars-000015283631-n16djd-large.jpg",
+    "country": "United States",
+    "first_name": "Justin",
+    "last_name": "Timberlake",
+    "full_name": "Justin Timberlake",
+    "description": "",
+    "city": "Los Angeles",
+    "discogs_name": null,
+    "myspace_name": null,
+    "website": "http://justintimberlake.com/",
+    "website_title": "",
+    "track_count": 178,
+    "playlist_count": 49,
+    "online": false,
+    "plan": "Pro Plus",
+    "public_favorites_count": 0,
+    "followers_count": 7912909,
+    "followings_count": 0,
+    "subscriptions": [
+        {
+            "product": {
+                "id": "creator-pro-unlimited",
+                "name": "Pro Unlimited"
+            }
+        }
+    ],
+    "reposts_count": 0
+}

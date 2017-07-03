@@ -1,6 +1,6 @@
 import { createRequest, createResponse } from 'node-mocks-http';
 
-import mockSearchResponse from '../data/search-response';
+import mockSearchResponse from '../data/search';
 
 const { ELASTICSEARCH_INDEX } = process.env;
 

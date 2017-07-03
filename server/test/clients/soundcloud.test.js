@@ -1,6 +1,6 @@
 import nock from 'nock';
 
-import { id, invalidId, invalidPermalink, permalink } from '../data/user';
+import { id, permalink } from '../data/users/justintimberlake/user';
 import { readUserProfilePage } from '../utils/file-reader';
 import { soundCloudClient } from '../../src/clients';
 
@@ -28,11 +28,11 @@ describe('SoundCloud client tests', () => {
     expect.assertions(1);
 
     nock('http://api.soundcloud.com')
-      .get(`/users/${invalidId}`)
+      .get(`/users/${id}`)
       .query({ client_id: clientId })
       .reply(404);
 
-    await expect(soundCloudClient.fetchUserProfileByUserId(invalidId))
+    await expect(soundCloudClient.fetchUserProfileByUserId(id))
       .rejects
       .toEqual({
         name: 'UserProfilePageNotFound',
@@ -57,7 +57,7 @@ describe('SoundCloud client tests', () => {
     expect.assertions(1);
 
     nock('https://soundcloud.com')
-      .get(`/${invalidPermalink}`)
+      .get(`/${permalink}`)
       .reply(404);
 
     await expect(soundCloudClient.fetchUserProfilePageByUserPermalink(permalink))

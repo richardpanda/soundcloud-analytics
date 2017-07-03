@@ -1,8 +1,7 @@
 import { createRequest, createResponse } from 'node-mocks-http';
 import nock from 'nock';
 
-import { id, permalink } from '../data/user';
-import userProfileResponse from '../data/user-profile-response';
+import userProfileResponse from '../data/users/justintimberlake/user';
 import { readUserProfilePage } from '../utils/file-reader';
 
 const {
@@ -12,6 +11,7 @@ const {
   ELASTICSEARCH_TYPE,
   SOUNDCLOUD_CLIENT_ID,
 } = process.env;
+const { id, permalink } = userProfileResponse;
 
 describe('Users controller tests', () => {
   describe('createUser', () => {

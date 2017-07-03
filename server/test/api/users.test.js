@@ -1,14 +1,14 @@
 import nock from 'nock';
 import request from 'supertest';
 
-import { id, permalink } from '../data/user';
-import mockUserProfileResponse from '../data/user-profile-response';
+import mockUserProfileResponse from '../data/users/justintimberlake/user';
 import { readUserProfilePage } from '../utils/file-reader';
 import app from '../../src/app';
 import { elasticsearchClient } from '../../src/clients';
 import { User } from '../../src/models';
 import { Elasticsearch } from '../../src/utils';
 
+const { id, permalink } = mockUserProfileResponse;
 const { ELASTICSEARCH_INDEX, SOUNDCLOUD_CLIENT_ID } = process.env;
 const index = ELASTICSEARCH_INDEX;
 
@@ -44,6 +44,8 @@ describe('Users API tests', () => {
     });
 
     test('prevent creating duplicate users', async () => {
+      expect.assertions(2);
+
       await User.create({ id, permalink });
 
       const response = await request(app).post(endpoint).send({ permalink });
