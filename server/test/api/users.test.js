@@ -7,6 +7,7 @@ import { readUserProfilePage } from '../utils/file-reader';
 import app from '../../src';
 import { elasticsearchClient } from '../../src/clients';
 import { User } from '../../src/models';
+import { Elasticsearch } from '../../src/utils';
 
 const { ELASTICSEARCH_INDEX, SOUNDCLOUD_CLIENT_ID } = process.env;
 const index = ELASTICSEARCH_INDEX;
@@ -29,6 +30,8 @@ describe('Users API tests', () => {
       } else {
         await resetPostgresUsersTable;
       }
+
+      await Elasticsearch.setUpIndexAndMapping();
     });
 
     test('request body must contain permalink', async () => {

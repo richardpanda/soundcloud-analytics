@@ -4,11 +4,16 @@ import logger from 'morgan';
 
 import { postgresClient } from './clients';
 import routes from './routes';
+import { Elasticsearch } from './utils';
 
-const { LOGGING, SERVER_PORT } = process.env;
+const { LOGGING, SERVER_PORT, SET_UP_ELASTICSEARCH } = process.env;
 const app = express();
 
 postgresClient.sync();
+
+if (SET_UP_ELASTICSEARCH === 'true') {
+  Elasticsearch.setUpIndexAndMapping();
+}
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
