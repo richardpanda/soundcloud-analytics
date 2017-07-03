@@ -10,6 +10,7 @@ describe('Search controller tests', () => {
     const url = '/api/search';
 
     afterEach(() => {
+      jest.clearAllMocks();
       jest.resetModules();
     });
 
