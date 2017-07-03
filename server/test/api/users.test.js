@@ -2,9 +2,9 @@ import nock from 'nock';
 import request from 'supertest';
 
 import { id, permalink } from '../data/user';
-import userProfileResponse from '../data/user-profile-response';
+import mockUserProfileResponse from '../data/user-profile-response';
 import { readUserProfilePage } from '../utils/file-reader';
-import app from '../../src';
+import app from '../../src/app';
 import { elasticsearchClient } from '../../src/clients';
 import { User } from '../../src/models';
 import { Elasticsearch } from '../../src/utils';
@@ -78,7 +78,7 @@ describe('Users API tests', () => {
       nock('http://api.soundcloud.com')
         .get(`/users/${id}`)
         .query({ client_id: SOUNDCLOUD_CLIENT_ID })
-        .reply(200, userProfileResponse);
+        .reply(200, mockUserProfileResponse);
 
       const response = await request(app).post(endpoint).send({ permalink });
 

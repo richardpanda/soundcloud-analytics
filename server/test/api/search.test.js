@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import app from '../../src';
+import app from '../../src/app';
 import { elasticsearchClient } from '../../src/clients';
 import { Elasticsearch } from '../../src/utils';
 
