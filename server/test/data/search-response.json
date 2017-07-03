@@ -1,0 +1,49 @@
+{
+    "took": 1,
+    "timed_out": false,
+    "_shards": {
+        "total": 5,
+        "successful": 5,
+        "failed": 0
+    },
+    "hits": {
+        "total": 0,
+        "max_score": 0,
+        "hits": []
+    },
+    "suggest": {
+        "suggestions": [
+            {
+                "text": "j",
+                "offset": 0,
+                "length": 1,
+                "options": [
+                    {
+                        "text": "justinbieber",
+                        "_index": "soundcloud-analytics-dev",
+                        "_type": "user",
+                        "_id": "35724639",
+                        "_score": 1,
+                        "_source": {
+                            "suggest": {
+                                "input": "justinbieber"
+                            }
+                        }
+                    },
+                    {
+                        "text": "justintimberlake",
+                        "_index": "soundcloud-analytics-dev",
+                        "_type": "user",
+                        "_id": "16948903",
+                        "_score": 1,
+                        "_source": {
+                            "suggest": {
+                                "input": "justintimberlake"
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
