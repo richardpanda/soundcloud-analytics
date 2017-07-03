@@ -1,4 +1,4 @@
 .env
 .env.test
-dist
+server/dist
 node_modules
