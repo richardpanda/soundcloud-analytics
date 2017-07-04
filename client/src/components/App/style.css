@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+html, body {
+  height: 100%;
+  margin: 0px;
+}
+
+#app {
+  height: 100%;
+}
+
+.container {
+  height: 100%;
+  lost-center: 60%;
+}
