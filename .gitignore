@@ -1,4 +1,5 @@
 .env
 .env.test
-server/dist
+client/dist/bundle.js
 node_modules
+server/dist
