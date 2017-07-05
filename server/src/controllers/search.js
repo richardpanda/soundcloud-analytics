@@ -5,7 +5,7 @@ const { ELASTICSEARCH_INDEX } = process.env;
 const searchPermalinkSuggestions = async (req, res) => {
   const { q } = req.query;
 
-  if (!q) {
+  if (q === undefined) {
     return res.status(400).json({ message: 'Field q is missing in query string.' });
   }
 
