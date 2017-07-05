@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './style.css';
-import SearchBar from '../SearchBar';
+import SearchBar from '../../containers/SearchBar';
 
 class Home extends React.Component {
   render() {
