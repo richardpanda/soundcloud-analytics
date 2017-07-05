@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import './style.css';
+
 class SuggestionsBox extends Component {
   render() {
     const { suggestions } = this.props;
 
     return (
-      <ul>
-        {suggestions.map(suggestion => <li key={suggestion}>{suggestion}</li>)}
-      </ul>
+      <div className="suggestions">
+        {suggestions.map(suggestion => (
+          <div className="suggestion" key={suggestion}>{suggestion}</div>
+        ))}
+      </div>
     );
   }
 }
