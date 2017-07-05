@@ -3,6 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: [
+    'regenerator-runtime/runtime',
     'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:3000',
     'webpack/hot/only-dev-server',
