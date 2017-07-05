@@ -24,10 +24,10 @@ describe('suggestions actions', () => {
       });
     });
 
-    test('fetchSuggestionsError should create FETCH_SUGGESTIONS_ERROR action', () => {
+    test('fetchSuggestionsFailure should create FETCH_SUGGESTIONS_FAILURE action', () => {
       const message = 'Something went wrong...';
-      expect(actions.fetchSuggestionsError(message)).toEqual({
-        type: actions.FETCH_SUGGESTIONS_ERROR,
+      expect(actions.fetchSuggestionsFailure(message)).toEqual({
+        type: actions.FETCH_SUGGESTIONS_FAILURE,
         message,
       });
     });
@@ -57,12 +57,12 @@ describe('suggestions actions', () => {
       expect(store.getActions()).toEqual(expectedActions);
     });
 
-    test('creates FETCH_SUGGESTIONS_ERROR', async () => {
+    test('creates FETCH_SUGGESTIONS_FAILURE', async () => {
       const query = 'j';
       const message = 'Something went wrong...';
       const expectedActions = [
         { type: actions.FETCH_SUGGESTIONS_REQUEST },
-        { type: actions.FETCH_SUGGESTIONS_ERROR, message }
+        { type: actions.FETCH_SUGGESTIONS_FAILURE, message }
       ];
       const store = mockStore(initialState);
 
