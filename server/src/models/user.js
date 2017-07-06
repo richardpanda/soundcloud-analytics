@@ -1,5 +1,6 @@
 import { INTEGER, STRING } from 'sequelize';
 
+import Statistic from './statistic';
 import { postgresClient } from '../clients';
 
 const User = postgresClient.define('user', {
@@ -19,5 +20,7 @@ const User = postgresClient.define('user', {
     },
   },
 });
+
+User.hasMany(Statistic);
 
 export default User;
