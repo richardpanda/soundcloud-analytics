@@ -4,9 +4,18 @@ import { Elasticsearch } from './utils';
 
 const { SERVER_PORT } = process.env;
 
-postgresClient.sync();
-Elasticsearch.setUpIndexAndMapping();
+(async () => {
+  try {
+    await Promise.all([
+      postgresClient.sync(),
+      Elasticsearch.setUpIndexAndMapping(),
+    ]);
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
 
-app.listen(SERVER_PORT, () => {
-  console.log(`Listening on port ${SERVER_PORT}.`);
-});
+  app.listen(SERVER_PORT, () => {
+    console.log(`Listening on port ${SERVER_PORT}.`);
+  });
+})();
