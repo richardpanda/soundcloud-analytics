@@ -11,11 +11,12 @@ const {
   ELASTICSEARCH_TYPE,
   SOUNDCLOUD_CLIENT_ID,
 } = process.env;
-const { id, permalink } = userProfileResponse;
+const { followers_count, id, permalink } = userProfileResponse;
 
 describe('Users controller tests', () => {
   describe('createUser', () => {
     afterEach(() => {
+      jest.clearAllMocks();
       jest.resetModules();
       nock.cleanAll();
     });
@@ -46,6 +47,7 @@ describe('Users controller tests', () => {
           findOne: jest.fn((options) => ({ id: 69257219, permalink: 'nghtmre' })),
         };
       });
+      
       const { users } = require('../../src/controllers');
       const { User } = require('../../src/models');
 
@@ -104,7 +106,7 @@ describe('Users controller tests', () => {
     });
 
     test('create user', async () => {
-      expect.assertions(6);
+      expect.assertions(7);
 
       const userProfilePage = await readUserProfilePage();
 
@@ -124,6 +126,12 @@ describe('Users controller tests', () => {
         };
       });
 
+      jest.mock('../../src/models/statistic', () => {
+        return {
+          create: jest.fn(),
+        };
+      });
+
       jest.mock('../../src/clients/elasticsearch', () => {
         return {
           create: jest.fn(),
@@ -132,11 +140,12 @@ describe('Users controller tests', () => {
 
       const { elasticsearchClient } = require('../../src/clients');
       const { users } = require('../../src/controllers');
-      const { User } = require('../../src/models');
+      const { User, Statistic } = require('../../src/models');
 
-      const findOneSpy = jest.spyOn(User, 'findOne');
-      const postgresCreateSpy = jest.spyOn(User, 'create');
       const elasticsearchCreateSpy = jest.spyOn(elasticsearchClient, 'create');
+      const statisticCreateSpy = jest.spyOn(Statistic, 'create');
+      const userCreateSpy = jest.spyOn(User, 'create');
+      const userFindOneSpy = jest.spyOn(User, 'findOne');
 
       const request = createRequest({
         method: 'POST',
@@ -150,8 +159,6 @@ describe('Users controller tests', () => {
 
       const responseBody = JSON.parse(response._getData());
 
-      expect(findOneSpy).toHaveBeenCalledWith({ where: { permalink } });
-      expect(postgresCreateSpy).toHaveBeenCalledWith({ id, permalink });
       expect(elasticsearchCreateSpy).toHaveBeenCalledWith({
         index: ELASTICSEARCH_INDEX,
         type: ELASTICSEARCH_TYPE,
@@ -163,6 +170,9 @@ describe('Users controller tests', () => {
         },
         refresh: "true",
       });
+      expect(statisticCreateSpy).toHaveBeenCalledWith({ userId: id, followers: followers_count });
+      expect(userFindOneSpy).toHaveBeenCalledWith({ where: { permalink } });
+      expect(userCreateSpy).toHaveBeenCalledWith({ id, permalink });
       expect(response.statusCode).toBe(200);
       expect(responseBody.id).toBe(id);
       expect(responseBody.permalink).toBe(permalink);

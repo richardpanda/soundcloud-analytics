@@ -4,7 +4,7 @@ import request from 'supertest';
 import mockUserProfileResponse from '../data/users/justintimberlake/user';
 import { readUserProfilePage } from '../utils/file-reader';
 import app from '../../src/app';
-import { elasticsearchClient } from '../../src/clients';
+import { elasticsearchClient, postgresClient } from '../../src/clients';
 import { User } from '../../src/models';
 import { Elasticsearch } from '../../src/utils';
 
@@ -19,16 +19,16 @@ describe('Users API tests', () => {
     beforeEach(async () => {
       nock.cleanAll();
 
-      const resetPostgresUsersTable = User.sync({ force: true });
+      const resetPostgresTables = postgresClient.sync({ force: true });
       const isIndexExists = await elasticsearchClient.indices.exists({ index });
 
       if (isIndexExists) {
         await Promise.all([
-          resetPostgresUsersTable,
+          resetPostgresTables,
           elasticsearchClient.indices.delete({ index })
         ]);
       } else {
-        await resetPostgresUsersTable;
+        await resetPostgresTables;
       }
 
       await Elasticsearch.setUpIndexAndMapping();

@@ -1,7 +1,7 @@
 import elasticsearch from 'elasticsearch';
 
 import { elasticsearchClient, soundCloudClient } from '../clients';
-import { User } from '../models';
+import { Statistic, User } from '../models';
 
 const { ELASTICSEARCH_INDEX, ELASTICSEARCH_TYPE } = process.env;
 const index = ELASTICSEARCH_INDEX;
@@ -24,19 +24,22 @@ const createUser = async (req, res) => {
     const userProfile = await soundCloudClient.fetchUserProfileByUserPermalink(permalink);
     const id = userProfile.id;
 
-    await Promise.all([
-      User.create({ id, permalink }),
-      elasticsearchClient.create({
-        index,
-        type,
-        id,
-        body: {
-          suggest: {
-            input: permalink,
-          },
+    const elasticsearchCreatePromise = elasticsearchClient.create({
+      index,
+      type,
+      id,
+      body: {
+        suggest: {
+          input: permalink,
         },
-        refresh: "true",
-      })
+      },
+      refresh: "true",
+    });
+
+    await User.create({ id, permalink });
+    await Promise.all([
+      elasticsearchCreatePromise,
+      Statistic.create({ userId: id, followers: userProfile.followers_count })
     ]);
 
     res.status(200).json({ id, permalink });
@@ -46,7 +49,7 @@ const createUser = async (req, res) => {
     if (message && status) {
       return res.status(status).json({ message });
     }
-    
+
     res.status(400).json({ message });
   }
 };
