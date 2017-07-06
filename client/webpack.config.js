@@ -16,6 +16,7 @@ module.exports = {
   },
   context: resolve(__dirname, 'src'),
   devServer: {
+    historyApiFallback: true,
     hot: true,
     contentBase: resolve(__dirname, 'dist'),
     publicPath: '/',
