@@ -5,7 +5,7 @@ import mockUserProfileResponse from '../data/users/justintimberlake/user';
 import { readUserProfilePage } from '../utils/file-reader';
 import app from '../../src/app';
 import { elasticsearchClient, postgresClient } from '../../src/clients';
-import { User } from '../../src/models';
+import { User, Statistic } from '../../src/models';
 import { Elasticsearch } from '../../src/utils';
 
 const { id, permalink } = mockUserProfileResponse;
@@ -87,6 +87,41 @@ describe('Users API tests', () => {
       expect(response.status).toBe(200);
       expect(response.body.id).toBe(id);
       expect(response.body.permalink).toBe(permalink);
+    });
+  });
+
+  describe('GET /api/users/:permalink/statistics', () => {
+    const endpoint = `/api/users/${permalink}/statistics`;
+
+    beforeEach(async () => {
+      nock.cleanAll();
+      await postgresClient.sync({ force: true });
+    });
+
+    test('user does not exist', async () => {
+      expect.assertions(2);
+
+      const response = await request(app).get(endpoint);
+
+      expect(response.status).toBe(404);
+      expect(response.body.message).toBe('User does not exist.');
+    });
+
+    test('retrieve user statistics', async () => {
+      expect.assertions(2);
+
+      const user = await User.create({ id, permalink });
+      const statistics = await Promise.all([
+        Statistic.create({ userId: user.id, date: '2017-07-01', followers: 1 }),
+        Statistic.create({ userId: user.id, date: '2017-07-02', followers: 2 }),
+        Statistic.create({ userId: user.id, date: '2017-07-03', followers: 3 }),
+        Statistic.create({ userId: user.id, date: '2017-07-04', followers: 4 }),
+      ]);
+
+      const response = await request(app).get(endpoint);
+
+      expect(response.status).toBe(200);
+      expect(response.body.statistics).toHaveLength(4);
     });
   });
 });
