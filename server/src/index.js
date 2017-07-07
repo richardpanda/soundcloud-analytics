@@ -6,13 +6,6 @@ import { Elasticsearch, Statistics } from './utils';
 
 const { SERVER_PORT } = process.env;
 
-scheduleJob('0 0 * * *', async () => {
-  const errors = await Statistics.addNewStatistics();
-  if (errors) {
-    console.error(errors);
-  }
-});
-
 (async () => {
   try {
     await Promise.all([
@@ -23,6 +16,13 @@ scheduleJob('0 0 * * *', async () => {
     console.error(error);
     process.exit(1);
   }
+
+  scheduleJob('0 0 * * *', async () => {
+    const errors = await Statistics.addNewStatistics();
+    if (errors) {
+      console.error(errors);
+    }
+  });
 
   app.listen(SERVER_PORT, () => {
     console.log(`Listening on port ${SERVER_PORT}.`);
