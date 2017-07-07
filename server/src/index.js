@@ -1,8 +1,17 @@
+import { scheduleJob } from 'node-schedule';
+
 import app from './app';
 import { postgresClient } from './clients';
-import { Elasticsearch } from './utils';
+import { Elasticsearch, Statistics } from './utils';
 
 const { SERVER_PORT } = process.env;
+
+scheduleJob('0 0 * * *', async () => {
+  const errors = await Statistics.addNewStatistics();
+  if (errors) {
+    console.error(errors);
+  }
+});
 
 (async () => {
   try {
