@@ -1,7 +1,8 @@
 import { createRequest, createResponse } from 'node-mocks-http';
 import nock from 'nock';
 
-import userProfileResponse from '../data/users/justintimberlake/user';
+import userProfileResponse from '../data/users/justintimberlake/user.json';
+import mockStatistics from '../data/users/justintimberlake/statistics.json';
 import { readUserProfilePage } from '../utils/file-reader';
 
 const {
@@ -47,7 +48,7 @@ describe('Users controller tests', () => {
           findOne: jest.fn((options) => ({ id: 69257219, permalink: 'nghtmre' })),
         };
       });
-      
+
       const { users } = require('../../src/controllers');
       const { User } = require('../../src/models');
 
@@ -176,6 +177,102 @@ describe('Users controller tests', () => {
       expect(response.statusCode).toBe(200);
       expect(responseBody.id).toBe(id);
       expect(responseBody.permalink).toBe(permalink);
+    });
+  });
+
+  describe('readUserStatistics', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+      jest.resetModules();
+    });
+
+    test('request params must contain permalink', async () => {
+      expect.assertions(2);
+
+      const { users } = require('../../src/controllers');
+
+      const request = createRequest({
+        method: 'GET',
+        url: `/api/users/${permalink}`,
+      });
+      const response = createResponse();
+      await users.readUserStatistics(request, response);
+
+      const responseBody = JSON.parse(response._getData());
+
+      expect(response.statusCode).toBe(400);
+      expect(responseBody.message).toBe('Permalink is missing.');
+    });
+
+    test('user does not exist', async () => {
+      expect.assertions(3);
+
+      jest.mock('../../src/models/user', () => {
+        return {
+          findOne: jest.fn((options) => null),
+        };
+      });
+
+      const { users } = require('../../src/controllers');
+      const { User } = require('../../src/models');
+      const spy = jest.spyOn(User, 'findOne');
+
+      const request = createRequest({
+        method: 'GET',
+        url: `/api/users/${permalink}`,
+        params: {
+          permalink,
+        },
+      });
+      const response = createResponse();
+      await users.readUserStatistics(request, response);
+
+      const responseBody = JSON.parse(response._getData());
+
+      expect(spy).toHaveBeenCalledWith({ where: { permalink } });
+      expect(response.statusCode).toBe(404);
+      expect(responseBody.message).toBe('User does not exist.');
+    });
+
+    test('send user statistics', async () => {
+      expect.assertions(4);
+
+      const mockId = id;
+      const mockPermalink = permalink;
+
+      jest.mock('../../src/models/user', () => {
+        return {
+          findOne: jest.fn((options) => ({ id: mockId, permalink: mockPermalink })),
+        };
+      });
+
+      jest.mock('../../src/models/statistic', () => {
+        return {
+          findAll: jest.fn((options) => mockStatistics),
+        };
+      });
+
+      const { users } = require('../../src/controllers');
+      const { Statistic, User } = require('../../src/models');
+      const userFindOneSpy = jest.spyOn(User, 'findOne');
+      const statisticFindAllSpy = jest.spyOn(Statistic, 'findAll');
+
+      const request = createRequest({
+        method: 'GET',
+        url: `/api/users/${permalink}`,
+        params: {
+          permalink,
+        },
+      });
+      const response = createResponse();
+      await users.readUserStatistics(request, response);
+
+      const responseBody = JSON.parse(response._getData());
+
+      expect(userFindOneSpy).toHaveBeenCalledWith({ where: { permalink } });
+      expect(statisticFindAllSpy).toHaveBeenCalledWith({ where: { userId: id } });
+      expect(response.statusCode).toBe(200);
+      expect(responseBody.statistics).toEqual(mockStatistics);
     });
   });
 });

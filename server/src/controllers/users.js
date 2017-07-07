@@ -54,6 +54,29 @@ const createUser = async (req, res) => {
   }
 };
 
+const readUserStatistics = async (req, res) => {
+  const { permalink } = req.params;
+
+  if (!permalink) {
+    return res.status(400).json({ message: 'Permalink is missing.' });
+  }
+
+  try {
+    const user = await User.findOne({ where: { permalink } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User does not exist.' });
+    }
+
+    const statistics = await Statistic.findAll({ where: { userId: user.id }});
+
+    res.status(200).json({ statistics });
+  } catch (err) {
+    res.status(400).send({ message });
+  }
+};
+
 export default {
   createUser,
+  readUserStatistics,
 };
