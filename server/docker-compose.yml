@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "xpack.security.enabled=false"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+  postgres:
+    image: library/postgres
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=soundcloud_analytics_test
+  test:
+    build: .
+    environment:
+      - ELASTICSEARCH_ADDRESS=elasticsearch
+      - ELASTICSEARCH_INDEX=soundcloud-analytics-test
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_TYPE=user
+      - LOGGING=false
+      - POSTGRES_DATABASE=soundcloud_analytics_test
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USERNAME=test
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_PORT=5432
+      - POSTGRES_TIMEZONE=America/Los_Angeles
+      - SOUNDCLOUD_CLIENT_ID='MY_SOUNDCLOUD_CLIENT_ID'
+      - SERVER_PORT=4001
+    depends_on:
+      - elasticsearch
+      - postgres

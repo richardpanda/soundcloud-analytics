@@ -9,7 +9,7 @@
     "babel": "node_modules/.bin/babel src -w --out-dir dist",
     "nodemon": "node_modules/.bin/nodemon -r dotenv/config -r regenerator-runtime/runtime dist/index.js",
     "start": "npm run babel & NODE_ENV=dev npm run nodemon",
-    "test": "NODE_ENV=test node_modules/.bin/jest  --colors --verbose"
+    "test": "NODE_ENV=test node_modules/.bin/jest --colors --verbose"
   },
   "dependencies": {
     "axios": "^0.16.2",
