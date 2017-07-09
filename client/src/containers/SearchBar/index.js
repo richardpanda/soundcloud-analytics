@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { push } from 'react-router-redux';
 
 import './style.css';
 import { query, suggestions } from '../../actions';
@@ -38,25 +38,28 @@ export class SearchBar extends Component {
   }
 
   handleQueryChange(event) {
+    const { dispatchChangeQuery, dispatchFetchSuggestions } = this.props;
     const query = event.target.value;
+
     this.setState({ query });
-    this.props.dispatchChangeQuery(query);
-    this.props.dispatchFetchSuggestions(query);
+    dispatchChangeQuery(query);
+    dispatchFetchSuggestions(query);
   }
 
   handleSubmit(event) {
     event.preventDefault();
 
-    const { history } = this.props;
+    const { dispatchRouteChange } = this.props;
     const { query } = this.state;
 
-    history.push(`/users/${query}`);
+    dispatchRouteChange(`/users/${query}`);
   }
 };
 
 const mapDispatchToProps = dispatch => ({
   dispatchChangeQuery: query => dispatch(changeQuery(query)),
   dispatchFetchSuggestions: query => dispatch(fetchSuggestions(query)),
+  dispatchRouteChange: location => dispatch(push(location)),
 });
 
-export default withRouter(connect(null, mapDispatchToProps)(SearchBar));
+export default connect(null, mapDispatchToProps)(SearchBar);
