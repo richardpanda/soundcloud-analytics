@@ -28,6 +28,7 @@ export class SearchBar extends Component {
           placeholder="Search for SoundCloud user"
           type="search"
           required
+          autoComplete="off"
         />
         <button className="search-button" type="submit">
           <i className="fa fa-search" />
