@@ -23,6 +23,7 @@
     "nock": "^9.0.13",
     "normalize.css": "^7.0.0",
     "postcss-cssnext": "^2.11.0",
+    "postcss-font-magician": "^2.0.0",
     "postcss-import": "^10.0.0",
     "postcss-loader": "^2.0.6",
     "react": "^15.6.1",
