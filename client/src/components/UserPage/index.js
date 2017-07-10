@@ -26,16 +26,16 @@ class UserPage extends Component {
 
   render() {
     const { isFetching, error, statistics } = this.state;
+    const permalink = this.props.match.params.permalink;
 
     if (isFetching) {
       return <LoadingPage />;
     }
 
     if (error) {
-      return <UserNotFound message={error} />;
+      return <UserNotFound message={error} user={permalink} />;
     }
 
-    const permalink = this.props.match.params.permalink;
     return <StatisticsTable permalink={permalink} statistics={statistics} />;
   }
 

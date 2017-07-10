@@ -1,0 +1,28 @@
+.user-not-found {
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  height: 15%;
+  lost-align: center;
+  lost-center: 100%;
+  lost-flex-container: column;
+  margin-top: 20%;
+  width: 22.5rem;
+}
+
+.user-not-found-buttons {
+  height: 1.5rem;
+  lost-flex-container: row;
+}
+
+.user-not-found-buttons button {
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  width: 40px;
+}
+
+.check-button {
+  color: blue;
+  margin-right: 0.5rem;
+}
