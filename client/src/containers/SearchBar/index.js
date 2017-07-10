@@ -29,10 +29,13 @@ export class SearchBar extends Component {
           type="search"
           required
           autoComplete="off"
+          list="suggestions"
         />
-        <button className="search-button" type="submit">
-          <i className="fa fa-search" />
-        </button>
+        <div className="button-wrapper">
+          <button className="search-button" type="submit">
+            <i className="fa fa-search" />
+          </button>
+        </div>
       </form>
     );
   }
