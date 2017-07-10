@@ -1,3 +1,7 @@
+.heart {
+  color: red;
+}
+
 .user-not-found {
   background-color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.125);
@@ -20,9 +24,4 @@
   border: none;
   cursor: pointer;
   width: 40px;
-}
-
-.check-button {
-  color: blue;
-  margin-right: 0.5rem;
 }
