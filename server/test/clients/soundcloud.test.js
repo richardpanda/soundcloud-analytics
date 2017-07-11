@@ -7,7 +7,7 @@ import { soundCloudClient } from '../../src/clients';
 const clientId = process.env.SOUNDCLOUD_CLIENT_ID;
 
 describe('SoundCloud client tests', () => {
-  beforeEach(() => {
+  afterEach(() => {
     nock.cleanAll();
   });
 

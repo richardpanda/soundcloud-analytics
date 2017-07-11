@@ -1,4 +1,10 @@
+jest.mock('../../src/models/user');
+jest.mock('../../src/models/statistic');
+
 import nock from 'nock';
+
+import { User, Statistic } from '../../src/models';
+import { Statistics } from '../../src/utils';
 
 import mockUsers from '../data/users.json';
 import justinBieberProfile from '../data/users/justinbieber/user.json';
@@ -28,20 +34,9 @@ describe('Statistics tests', () => {
         .reply(200, userProfileByPermalink[permalink]);
     }
 
-    jest.mock('../../src/models/user', () => {
-      return {
-        findAll: jest.fn(() => mockUsers),
-      };
-    });
+    User.findAll = jest.fn(() => mockUsers);
+    Statistic.create = jest.fn();
 
-    jest.mock('../../src/models/statistic', () => {
-      return {
-        create: jest.fn(),
-      };
-    });
-
-    const { User, Statistic } = require('../../src/models');
-    const { Statistics } = require('../../src/utils');
     const spy = jest.spyOn(Statistic, 'create');
 
     const errors = await Statistics.addNewStatistics();

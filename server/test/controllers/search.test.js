@@ -1,4 +1,9 @@
+jest.mock('../../src/clients/elasticsearch');
+
 import { createRequest, createResponse } from 'node-mocks-http';
+
+import { elasticsearchClient } from '../../src/clients';
+import { search } from '../../src/controllers';
 
 import mockSearchResponse from '../data/search';
 
@@ -9,15 +14,8 @@ describe('Search controller tests', () => {
     const method = 'GET';
     const url = '/api/search';
 
-    afterEach(() => {
-      jest.clearAllMocks();
-      jest.resetModules();
-    });
-
     test('request must contain field q in query string', async () => {
       expect.assertions(2);
-
-      const { search } = require('../../src/controllers');
 
       const request = createRequest({ method, url });
       const response = createResponse();
@@ -33,14 +31,7 @@ describe('Search controller tests', () => {
     test('receive suggestions', async () => {
       expect.assertions(3);
 
-      jest.mock('../../src/clients/elasticsearch', () => {
-        return {
-          search: jest.fn(options => mockSearchResponse),
-        };
-      });
-
-      const { elasticsearchClient } = require('../../src/clients');
-      const { search } = require('../../src/controllers');
+      elasticsearchClient.search = jest.fn(options => mockSearchResponse);
 
       const spy = jest.spyOn(elasticsearchClient, 'search');
 

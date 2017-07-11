@@ -3,7 +3,10 @@
     "setupFiles": [
       "./jest-setup.js"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "clearMocks": true,
+    "resetMocks": true,
+    "resetModules": true
   },
   "scripts": {
     "babel": "node_modules/.bin/babel src -w --out-dir dist",

@@ -1,5 +1,13 @@
+jest.mock('../../src/models/user');
+jest.mock('../../src/models/statistic');
+jest.mock('../../src/clients/elasticsearch');
+
 import { createRequest, createResponse } from 'node-mocks-http';
 import nock from 'nock';
+
+import { elasticsearchClient } from '../../src/clients';
+import { users } from '../../src/controllers';
+import { User, Statistic } from '../../src/models';
 
 import userProfileResponse from '../data/users/justintimberlake/user.json';
 import mockStatistics from '../data/users/justintimberlake/statistics.json';
@@ -17,15 +25,11 @@ const { followers_count, id, permalink } = userProfileResponse;
 describe('Users controller tests', () => {
   describe('createUser', () => {
     afterEach(() => {
-      jest.clearAllMocks();
-      jest.resetModules();
       nock.cleanAll();
     });
 
     test('request body must contain permalink', async () => {
       expect.assertions(2);
-
-      const { users } = require('../../src/controllers');
 
       const request = createRequest({
         method: 'POST',
@@ -43,14 +47,7 @@ describe('Users controller tests', () => {
     test('prevent creating duplicate users', async () => {
       expect.assertions(3);
 
-      jest.mock('../../src/models/user', () => {
-        return {
-          findOne: jest.fn((options) => ({ id: 69257219, permalink: 'nghtmre' })),
-        };
-      });
-
-      const { users } = require('../../src/controllers');
-      const { User } = require('../../src/models');
+      User.findOne = jest.fn((options) => ({ id: 69257219, permalink: 'nghtmre' }))
 
       const spy = jest.spyOn(User, 'findOne');
 
@@ -78,14 +75,7 @@ describe('Users controller tests', () => {
         .get(`/${permalink}`)
         .reply(404);
 
-      jest.mock('../../src/models/user', () => {
-        return {
-          findOne: jest.fn((options) => null),
-        };
-      });
-
-      const { users } = require('../../src/controllers');
-      const { User } = require('../../src/models');
+      User.findOne = jest.fn((options) => null);
 
       const spy = jest.spyOn(User, 'findOne');
 
@@ -120,28 +110,10 @@ describe('Users controller tests', () => {
         .query({ client_id: process.env.SOUNDCLOUD_CLIENT_ID })
         .reply(200, userProfileResponse);
 
-      jest.mock('../../src/models/user', () => {
-        return {
-          create: jest.fn(),
-          findOne: jest.fn((options) => null),
-        };
-      });
-
-      jest.mock('../../src/models/statistic', () => {
-        return {
-          create: jest.fn(),
-        };
-      });
-
-      jest.mock('../../src/clients/elasticsearch', () => {
-        return {
-          create: jest.fn(),
-        };
-      });
-
-      const { elasticsearchClient } = require('../../src/clients');
-      const { users } = require('../../src/controllers');
-      const { User, Statistic } = require('../../src/models');
+      User.create = jest.fn();
+      User.findOne = jest.fn((options) => null);
+      Statistic.create = jest.fn();
+      elasticsearchClient.create = jest.fn();
 
       const elasticsearchCreateSpy = jest.spyOn(elasticsearchClient, 'create');
       const statisticCreateSpy = jest.spyOn(Statistic, 'create');
@@ -181,15 +153,8 @@ describe('Users controller tests', () => {
   });
 
   describe('readUserStatistics', () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      jest.resetModules();
-    });
-
     test('request params must contain permalink', async () => {
       expect.assertions(2);
-
-      const { users } = require('../../src/controllers');
 
       const request = createRequest({
         method: 'GET',
@@ -207,14 +172,8 @@ describe('Users controller tests', () => {
     test('user does not exist', async () => {
       expect.assertions(3);
 
-      jest.mock('../../src/models/user', () => {
-        return {
-          findOne: jest.fn((options) => null),
-        };
-      });
+      User.findOne((options) => null);
 
-      const { users } = require('../../src/controllers');
-      const { User } = require('../../src/models');
       const spy = jest.spyOn(User, 'findOne');
 
       const request = createRequest({
@@ -240,20 +199,9 @@ describe('Users controller tests', () => {
       const mockId = id;
       const mockPermalink = permalink;
 
-      jest.mock('../../src/models/user', () => {
-        return {
-          findOne: jest.fn((options) => ({ id: mockId, permalink: mockPermalink })),
-        };
-      });
+      User.findOne = jest.fn((options) => ({ id: mockId, permalink: mockPermalink }));
+      Statistic.findAll = jest.fn((options) => mockStatistics);
 
-      jest.mock('../../src/models/statistic', () => {
-        return {
-          findAll: jest.fn((options) => mockStatistics),
-        };
-      });
-
-      const { users } = require('../../src/controllers');
-      const { Statistic, User } = require('../../src/models');
       const userFindOneSpy = jest.spyOn(User, 'findOne');
       const statisticFindAllSpy = jest.spyOn(Statistic, 'findAll');
 
