@@ -8,37 +8,69 @@ class UserNotFound extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { success: false };
-    this.setSuccess = this.setSuccess.bind(this);
+    this.state = { error: null, isUserCreated: false };
+    this.setError = this.setError.bind(this);
+    this.setUserCreated = this.setUserCreated.bind(this);
   }
 
   render() {
     const { message, user } = this.props;
-    const { success } = this.state;
+    const { error, isUserCreated } = this.state;
 
-    if (success) {
-      return (
-        <div className="user-not-found">
+    let content = (
+      <div className="user-not-found-content">
+        <div>{message}</div>
+        <div>Would you like us to track {user}?</div>
+        <div className="user-not-found-buttons">
+          <ConfirmButton
+            setError={this.setError}
+            setUserCreated={this.setUserCreated}
+            user={user}
+          />
+          <CancelButton />
+        </div>
+      </div>
+    );
+
+    if (isUserCreated) {
+      content = (
+        <div className="user-not-found-content">
           <div>We are now tracking {user}!</div>
           <div>Thank you for your contribution! <i className="fa fa-heart heart" /></div>
         </div>
       );
     }
 
+    if (error) {
+      if (error.status === 404) {
+        content = (
+          <div className="user-not-found-content">
+            <div>Unable to find SoundCloud user:</div>
+            <div>{user}</div>
+          </div>
+        );
+      } else {
+        content = (
+          <div className="user-not-found-content">
+            <div>{error.message}</div>
+          </div>
+        );
+      }
+    }
+
     return (
       <div className="user-not-found">
-        <div>{message}</div>
-        <div>Would you like us to track {user}?</div>
-        <div className="user-not-found-buttons">
-          <ConfirmButton setSuccess={this.setSuccess} user={user} />
-          <CancelButton />
-        </div>
+        {content}
       </div>
     );
   }
 
-  setSuccess() {
-    this.setState({ success: true });
+  setError(error) {
+    this.setState({ error });
+  }
+
+  setUserCreated() {
+    this.setState({ isUserCreated: true });
   }
 }
 

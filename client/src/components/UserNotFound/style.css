@@ -25,3 +25,8 @@
   cursor: pointer;
   width: 40px;
 }
+
+.user-not-found-content {
+  lost-align: center;
+  lost-flex-container: column;
+}

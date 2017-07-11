@@ -19,13 +19,16 @@ class ConfirmButton extends Component {
   }
 
   async handleClick(event) {
-    const { setSuccess, user } = this.props;
+    const { setError, setUserCreated, user } = this.props;
 
     try {
       await post(`http://localhost:4000/api/users`, { permalink: user });
-      setSuccess();
-    } catch (error) {
-      console.error(error);
+      setUserCreated();
+    } catch ({ response }) {
+      setError({
+        status: response.status,
+        message: response.data.message,
+      });
     }
   }
 }
