@@ -25,7 +25,9 @@ export class SearchBar extends Component {
           className="search-input"
           name="query"
           onChange={this.handleQueryChange}
+          pattern="[\w-]{3,255}"
           placeholder="Search for SoundCloud user"
+          title="User must be between 3 and 255 characters. Only numbers, letters, underscores and hyphens are allowed."
           type="search"
           required
           autoComplete="off"
