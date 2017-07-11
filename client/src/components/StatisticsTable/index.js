@@ -1,10 +1,13 @@
 import React from 'react';
 
+import './style.css';
+
 const StatisticsTable = ({ permalink, statistics }) => (
-    <table>
-      <caption>{permalink.toUpperCase()}</caption>
+  <div className="statistics-table-container">
+    <table className="statistics-table">
+      <caption className="statistics-table-caption">{permalink.toUpperCase()}</caption>
       <thead>
-        <tr>
+        <tr className="statistics-table-header">
           <th>Date</th>
           <th>Followers</th>
         </tr>
@@ -18,6 +21,7 @@ const StatisticsTable = ({ permalink, statistics }) => (
         ))}
       </tbody>
     </table>
+  </div>
 );
 
 export default StatisticsTable;

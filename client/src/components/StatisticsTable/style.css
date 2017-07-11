@@ -1,0 +1,20 @@
+.statistics-table {
+  max-width: 400px;
+  width: 100%;
+}
+
+.statistics-table-caption {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.statistics-table-container {
+  justify-content: center;
+  lost-flex-container: row;
+  margin-top: 20%;
+  width: 100%;
+}
+
+.statistics-table-header {
+  text-align: left;
+}
