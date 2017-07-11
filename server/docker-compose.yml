@@ -19,7 +19,9 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=soundcloud_analytics_test
   test:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.test
     environment:
       - ELASTICSEARCH_ADDRESS=elasticsearch
       - ELASTICSEARCH_INDEX=soundcloud-analytics-test
