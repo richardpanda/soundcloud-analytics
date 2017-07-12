@@ -1,18 +1,11 @@
 const { resolve } = require('path');
-const {
-  DefinePlugin,
-  HotModuleReplacementPlugin,
-  NamedModulesPlugin,
-} = require('webpack');
+const { DefinePlugin, NamedModulesPlugin } = require('webpack');
 
 const { API_SERVER_PORT } = process.env;
 
 module.exports = {
   entry: [
     'regenerator-runtime/runtime',
-    'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:3000',
-    'webpack/hot/only-dev-server',
     './index.js'
   ],
   output: {
@@ -23,7 +16,6 @@ module.exports = {
   context: resolve(__dirname, 'src'),
   devServer: {
     historyApiFallback: true,
-    hot: true,
     contentBase: resolve(__dirname, 'dist'),
     publicPath: '/',
     port: 3000
@@ -59,7 +51,6 @@ module.exports = {
     new DefinePlugin({
       API_SERVER_PORT,
     }),
-    new HotModuleReplacementPlugin(),
     new NamedModulesPlugin()
   ]
 };

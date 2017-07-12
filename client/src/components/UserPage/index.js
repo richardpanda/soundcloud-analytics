@@ -41,7 +41,7 @@ class UserPage extends Component {
 
   async fetchUserStatistics(permalink) {
     try {
-      const response = await get(`http://localhost:4000/api/users/${permalink}/statistics`);
+      const response = await get(`http://localhost:${API_SERVER_PORT}/api/users/${permalink}/statistics`);
       this.setState({ isFetching: false, statistics: response.data.statistics });
     } catch (error) {
       this.setState({ isFetching: false, error: error.response.data.message });

@@ -1,9 +1,14 @@
 {
   "jest": {
+    "globals": {
+      "API_SERVER_PORT": 4001
+    },
     "testEnvironment": "node"
   },
   "scripts": {
-    "start": "node_modules/.bin/webpack-dev-server",
+    "build:prod": "node_modules/.bin/webpack -p --config webpack.config.prod.js",
+    "start": "API_SERVER_PORT=4000 node_modules/.bin/webpack-dev-server",
+    "start:prod": "npm run build:prod && node server.js",
     "test": "node_modules/.bin/jest --colors --verbose"
   },
   "devDependencies": {
@@ -41,5 +46,8 @@
     "url-loader": "^0.5.9",
     "webpack": "^3.0.0",
     "webpack-dev-server": "^2.5.0"
+  },
+  "dependencies": {
+    "express": "^4.15.3"
   }
 }

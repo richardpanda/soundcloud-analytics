@@ -21,7 +21,7 @@ export const fetchSuggestionsFailure = message => ({
 export const fetchSuggestions = (query) => async (dispatch) => {
   dispatch(fetchSuggestionsRequest());
   try {
-    const response = await axios.get(`http://localhost:4000/api/search?q=${query}`);
+    const response = await axios.get(`http://localhost:${API_SERVER_PORT}/api/search?q=${query}`);
     return dispatch(fetchSuggestionsSuccess(response.data.suggestions));
   } catch ({ response }) {
     return dispatch(fetchSuggestionsFailure(response.data.message));

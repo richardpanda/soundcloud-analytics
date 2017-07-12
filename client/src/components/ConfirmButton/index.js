@@ -22,7 +22,7 @@ class ConfirmButton extends Component {
     const { setError, setUserCreated, user } = this.props;
 
     try {
-      await post(`http://localhost:4000/api/users`, { permalink: user });
+      await post(`http://localhost:${API_SERVER_PORT}/api/users`, { permalink: user });
       setUserCreated();
     } catch ({ response }) {
       setError({

@@ -47,7 +47,7 @@ describe('suggestions actions', () => {
       ];
       const store = mockStore(initialState);
 
-      nock('http://localhost:4000')
+      nock(`http://localhost:${API_SERVER_PORT}`)
         .get('/api/search')
         .query({ q: query })
         .reply(200, { suggestions });
@@ -66,7 +66,7 @@ describe('suggestions actions', () => {
       ];
       const store = mockStore(initialState);
 
-      nock('http://localhost:4000')
+      nock(`http://localhost:${API_SERVER_PORT}`)
         .get('/api/search')
         .query({ q: query })
         .reply(400, { message });
