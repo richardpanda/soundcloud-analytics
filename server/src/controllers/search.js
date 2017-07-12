@@ -23,6 +23,11 @@ const searchPermalinkSuggestions = async (req, res) => {
         },
       },
     });
+
+    if (!response.suggest) {
+      return res.status(200).json({ suggestions: [] });
+    }
+
     const suggestions = response.suggest.suggestions[0].options.map(option => option.text);
     res.status(200).json({ suggestions });
   } catch (err) {

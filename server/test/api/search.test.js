@@ -31,6 +31,15 @@ describe('Search API tests', () => {
       expect(response.body.message).toBe('Field q is missing in query string.');
     });
 
+    test('search when index is empty', async () => {
+      expect.assertions(2);
+
+      const response = await request(app).get(endpoint).query({ q: 'j' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.suggestions).toEqual([]);
+    });
+
     test('receive suggestions', async () => {
       expect.assertions(2);
 
