@@ -14,7 +14,7 @@ const StatisticsTable = ({ permalink, statistics }) => (
       </thead>
       <tbody>
         {statistics.map(({ id, date, followers }) => (
-          <tr key={id}>
+          <tr key={date}>
             <td>{date}</td>
             <td>{followers.toLocaleString()}</td>
           </tr>
