@@ -1,11 +1,8 @@
 import elasticsearch from 'elasticsearch';
 
-import { elasticsearchClient, soundCloudClient } from '../clients';
+import { soundCloudClient } from '../clients';
 import { Statistic, User } from '../models';
-
-const { ELASTICSEARCH_INDEX, ELASTICSEARCH_TYPE } = process.env;
-const index = ELASTICSEARCH_INDEX;
-const type = ELASTICSEARCH_TYPE;
+import { Elasticsearch } from '../utils';
 
 const createUser = async (req, res) => {
   const { permalink } = req.body;
@@ -24,20 +21,8 @@ const createUser = async (req, res) => {
     const userProfile = await soundCloudClient.fetchUserProfileByUserPermalink(permalink);
     const id = userProfile.id;
 
-    const elasticsearchCreatePromise = elasticsearchClient.create({
-      index,
-      type,
-      id,
-      body: {
-        suggest: {
-          input: permalink,
-        },
-      },
-      refresh: "true",
-    });
-
     await Promise.all([
-      elasticsearchCreatePromise,
+      Elasticsearch.createSuggestion({ id, permalink }),
       User.create({ id, permalink })
     ]);
 

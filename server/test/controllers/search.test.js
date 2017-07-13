@@ -1,13 +1,11 @@
-jest.mock('../../src/clients/elasticsearch');
+jest.mock('../../src/utils/elasticsearch');
 
 import { createRequest, createResponse } from 'node-mocks-http';
 
-import { elasticsearchClient } from '../../src/clients';
 import { search } from '../../src/controllers';
+import { Elasticsearch } from '../../src/utils';
 
 import mockSearchResponse from '../data/search';
-
-const { ELASTICSEARCH_INDEX } = process.env;
 
 describe('Search controller tests', () => {
   describe('searchPermalinkSuggestions', () => {
@@ -31,30 +29,20 @@ describe('Search controller tests', () => {
     test('receive suggestions', async () => {
       expect.assertions(3);
 
-      elasticsearchClient.search = jest.fn(options => mockSearchResponse);
+      const q = 'j';
 
-      const spy = jest.spyOn(elasticsearchClient, 'search');
+      Elasticsearch.searchSuggestions = jest.fn(options => mockSearchResponse);
 
-      const request = createRequest({ method, url, query: { q: 'j' } });
+      const spy = jest.spyOn(Elasticsearch, 'searchSuggestions');
+
+      const request = createRequest({ method, url, query: { q } });
       const response = createResponse();
 
       await search.searchPermalinkSuggestions(request, response);
 
       const responseBody = JSON.parse(response._getData());
 
-      expect(spy).toHaveBeenCalledWith({
-        index: ELASTICSEARCH_INDEX,
-        body: {
-          suggest: {
-            suggestions: {
-              prefix: 'j',
-              completion: {
-                field: 'suggest',
-              },
-            },
-          },
-        },
-      });
+      expect(spy).toHaveBeenCalledWith(q);
       expect(response.statusCode).toBe(200);
       expect(responseBody.suggestions).toEqual(['justinbieber', 'justintimberlake']);
     });

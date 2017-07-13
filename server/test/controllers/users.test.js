@@ -1,13 +1,13 @@
 jest.mock('../../src/models/user');
 jest.mock('../../src/models/statistic');
-jest.mock('../../src/clients/elasticsearch');
+jest.mock('../../src/utils/elasticsearch');
 
 import { createRequest, createResponse } from 'node-mocks-http';
 import nock from 'nock';
 
-import { elasticsearchClient } from '../../src/clients';
 import { users } from '../../src/controllers';
 import { User, Statistic } from '../../src/models';
+import { Elasticsearch } from '../../src/utils';
 
 import userProfileResponse from '../data/users/justintimberlake/user.json';
 import mockStatistics from '../data/users/justintimberlake/statistics.json';
@@ -112,9 +112,9 @@ describe('Users controller tests', () => {
 
       User.create = jest.fn();
       User.findOne = jest.fn((options) => null);
-      elasticsearchClient.create = jest.fn();
+      Elasticsearch.createSuggestion = jest.fn();
 
-      const elasticsearchCreateSpy = jest.spyOn(elasticsearchClient, 'create');
+      const elasticsearchCreateSuggestionSpy = jest.spyOn(Elasticsearch, 'createSuggestion');
       const userCreateSpy = jest.spyOn(User, 'create');
       const userFindOneSpy = jest.spyOn(User, 'findOne');
 
@@ -130,17 +130,7 @@ describe('Users controller tests', () => {
 
       const responseBody = JSON.parse(response._getData());
 
-      expect(elasticsearchCreateSpy).toHaveBeenCalledWith({
-        index: ELASTICSEARCH_INDEX,
-        type: ELASTICSEARCH_TYPE,
-        id,
-        body: {
-          suggest: {
-            input: permalink,
-          },
-        },
-        refresh: "true",
-      });
+      expect(elasticsearchCreateSuggestionSpy).toHaveBeenCalledWith({ id, permalink });
       expect(userFindOneSpy).toHaveBeenCalledWith({ where: { permalink } });
       expect(userCreateSpy).toHaveBeenCalledWith({ id, permalink });
       expect(response.statusCode).toBe(200);

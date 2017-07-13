@@ -4,31 +4,61 @@ const { ELASTICSEARCH_INDEX, ELASTICSEARCH_TYPE } = process.env;
 const index = ELASTICSEARCH_INDEX;
 const type = ELASTICSEARCH_TYPE;
 
-const setUpIndexAndMapping = async () => {
-  const body = {
-    [type]: {
-      properties: {
+class Elasticsearch {
+  static createSuggestion({ id, permalink }) {
+    return elasticsearchClient.create({
+      index,
+      type,
+      id,
+      body: {
         suggest: {
-          type: 'completion',
-        },
-        permalink: {
-          type: 'keyword',
+          input: permalink.toLowerCase(),
         },
       },
-    },
-  };
-
-  const isIndexExists = await elasticsearchClient.indices.exists({
-    index,
-  });
-
-  if (!isIndexExists) {
-    await elasticsearchClient.indices.create({ index });
+      refresh: "true",
+    });
   }
 
-  await elasticsearchClient.indices.putMapping({ index, type, body });
-};
+  static searchSuggestions(query) {
+    return elasticsearchClient.search({
+      index: ELASTICSEARCH_INDEX,
+      body: {
+        suggest: {
+          suggestions: {
+            prefix: 'j',
+            completion: {
+              field: 'suggest',
+            },
+          },
+        },
+      },
+    });
+  }
 
-export default {
-  setUpIndexAndMapping,
-};
+  static async setUpIndexAndMapping() {
+    const body = {
+      [type]: {
+        properties: {
+          suggest: {
+            type: 'completion',
+          },
+          permalink: {
+            type: 'keyword',
+          },
+        },
+      },
+    };
+
+    const isIndexExists = await elasticsearchClient.indices.exists({
+      index,
+    });
+
+    if (!isIndexExists) {
+      await elasticsearchClient.indices.create({ index });
+    }
+
+    await elasticsearchClient.indices.putMapping({ index, type, body });
+  }
+}
+
+export default Elasticsearch;

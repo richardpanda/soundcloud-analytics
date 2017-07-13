@@ -1,6 +1,4 @@
-import { elasticsearchClient } from '../clients';
-
-const { ELASTICSEARCH_INDEX } = process.env;
+import { Elasticsearch } from '../utils';
 
 const searchPermalinkSuggestions = async (req, res) => {
   const { q } = req.query;
@@ -10,19 +8,7 @@ const searchPermalinkSuggestions = async (req, res) => {
   }
 
   try {
-    const response = await elasticsearchClient.search({
-      index: ELASTICSEARCH_INDEX,
-      body: {
-        suggest: {
-          suggestions: {
-            prefix: q,
-            completion: {
-              field: 'suggest',
-            },
-          },
-        },
-      },
-    });
+    const response = await Elasticsearch.searchSuggestions(q);
 
     if (!response.suggest) {
       return res.status(200).json({ suggestions: [] });
