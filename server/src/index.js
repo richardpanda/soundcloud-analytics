@@ -17,7 +17,7 @@ const { SERVER_PORT } = process.env;
     process.exit(1);
   }
 
-  scheduleJob('0 0 * * *', async () => {
+  scheduleJob('30 59 23 * * *', async () => {
     const errors = await Statistics.addNewStatistics();
     if (errors) {
       console.error(errors);
