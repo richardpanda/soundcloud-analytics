@@ -25,7 +25,7 @@ class Elasticsearch {
       body: {
         suggest: {
           suggestions: {
-            prefix: 'j',
+            prefix: query,
             completion: {
               field: 'suggest',
             },
