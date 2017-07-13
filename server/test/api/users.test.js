@@ -110,6 +110,11 @@ describe('Users API tests', () => {
     test('retrieve user statistics', async () => {
       expect.assertions(2);
 
+      nock('http://api.soundcloud.com')
+        .get(`/users/${id}`)
+        .query({ client_id: SOUNDCLOUD_CLIENT_ID })
+        .reply(200, mockUserProfileResponse);
+
       const user = await User.create({ id, permalink });
       const statistics = await Promise.all([
         Statistic.create({ userId: user.id, date: '2017-07-01', followers: 1 }),
@@ -117,11 +122,21 @@ describe('Users API tests', () => {
         Statistic.create({ userId: user.id, date: '2017-07-03', followers: 3 }),
         Statistic.create({ userId: user.id, date: '2017-07-04', followers: 4 }),
       ]);
+      const expectedStatistics = [
+        ...statistics.map(({ date, followers}) => ({
+          date,
+          followers,
+        })),
+        {
+          date: new Date().toISOString().split('T')[0],
+          followers: mockUserProfileResponse.followers_count,
+        }
+      ];
 
       const response = await request(app).get(endpoint);
 
       expect(response.status).toBe(200);
-      expect(response.body.statistics).toHaveLength(4);
+      expect(response.body.statistics).toEqual(expectedStatistics);
     });
   });
 });

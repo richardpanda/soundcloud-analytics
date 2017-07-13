@@ -150,6 +150,10 @@ describe('Users controller tests', () => {
   });
 
   describe('readUserStatistics', () => {
+    afterEach(() => {
+      nock.cleanAll();
+    });
+
     test('request params must contain permalink', async () => {
       expect.assertions(2);
 
@@ -193,11 +197,20 @@ describe('Users controller tests', () => {
     test('send user statistics', async () => {
       expect.assertions(4);
 
+      nock('http://api.soundcloud.com')
+        .get(`/users/${id}`)
+        .query({ client_id: process.env.SOUNDCLOUD_CLIENT_ID })
+        .reply(200, userProfileResponse);
+
       const mockId = id;
       const mockPermalink = permalink;
+      const statistics = mockStatistics.map(({ date, followers }) => ({
+        date,
+        followers,
+      }));
 
       User.findOne = jest.fn((options) => ({ id: mockId, permalink: mockPermalink }));
-      Statistic.findAll = jest.fn((options) => mockStatistics);
+      Statistic.findAll = jest.fn((options) => statistics);
 
       const userFindOneSpy = jest.spyOn(User, 'findOne');
       const statisticFindAllSpy = jest.spyOn(Statistic, 'findAll');
@@ -214,10 +227,19 @@ describe('Users controller tests', () => {
 
       const responseBody = JSON.parse(response._getData());
 
+      const latestStatistic = {
+        date: new Date().toISOString().split('T')[0],
+        followers: userProfileResponse.followers_count,
+      };
+      const expectedStatistics = [...statistics, latestStatistic];
+
       expect(userFindOneSpy).toHaveBeenCalledWith({ where: { permalink } });
-      expect(statisticFindAllSpy).toHaveBeenCalledWith({ where: { userId: id } });
+      expect(statisticFindAllSpy).toHaveBeenCalledWith({
+        attributes: ['date', 'followers'],
+        where: { userId: id },
+      });
       expect(response.statusCode).toBe(200);
-      expect(responseBody.statistics).toEqual(mockStatistics);
+      expect(responseBody.statistics).toEqual(expectedStatistics);
     });
   });
 });

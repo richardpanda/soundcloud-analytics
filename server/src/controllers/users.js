@@ -67,9 +67,23 @@ const readUserStatistics = async (req, res) => {
       return res.status(404).json({ message: 'User does not exist.' });
     }
 
-    const statistics = await Statistic.findAll({ where: { userId: user.id }});
+    const [statistics, userProfile] = await Promise.all([
+      Statistic.findAll({
+        attributes: ['date', 'followers'],
+        where: { userId: user.id },
+      }),
+      soundCloudClient.fetchUserProfileByUserId(user.id)
+    ]);
 
-    res.status(200).json({ statistics });
+    res.status(200).json({
+      statistics: [
+        ...statistics,
+        {
+          date: new Date().toISOString().split('T')[0],
+          followers: userProfile.followers_count,
+        }
+      ],
+    });
   } catch (err) {
     res.status(400).send({ message });
   }
