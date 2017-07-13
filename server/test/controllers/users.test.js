@@ -97,7 +97,7 @@ describe('Users controller tests', () => {
     });
 
     test('create user', async () => {
-      expect.assertions(7);
+      expect.assertions(6);
 
       const userProfilePage = await readUserProfilePage();
 
@@ -112,11 +112,9 @@ describe('Users controller tests', () => {
 
       User.create = jest.fn();
       User.findOne = jest.fn((options) => null);
-      Statistic.create = jest.fn();
       elasticsearchClient.create = jest.fn();
 
       const elasticsearchCreateSpy = jest.spyOn(elasticsearchClient, 'create');
-      const statisticCreateSpy = jest.spyOn(Statistic, 'create');
       const userCreateSpy = jest.spyOn(User, 'create');
       const userFindOneSpy = jest.spyOn(User, 'findOne');
 
@@ -143,7 +141,6 @@ describe('Users controller tests', () => {
         },
         refresh: "true",
       });
-      expect(statisticCreateSpy).toHaveBeenCalledWith({ userId: id, followers: followers_count });
       expect(userFindOneSpy).toHaveBeenCalledWith({ where: { permalink } });
       expect(userCreateSpy).toHaveBeenCalledWith({ id, permalink });
       expect(response.statusCode).toBe(200);

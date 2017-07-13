@@ -36,10 +36,9 @@ const createUser = async (req, res) => {
       refresh: "true",
     });
 
-    await User.create({ id, permalink });
     await Promise.all([
       elasticsearchCreatePromise,
-      Statistic.create({ userId: id, followers: userProfile.followers_count })
+      User.create({ id, permalink })
     ]);
 
     res.status(200).json({ id, permalink });
