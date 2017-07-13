@@ -228,7 +228,7 @@ describe('Users controller tests', () => {
       const responseBody = JSON.parse(response._getData());
 
       const latestStatistic = {
-        date: new Date().toISOString().split('T')[0],
+        date: new Date().toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' }),
         followers: userProfileResponse.followers_count,
       };
       const expectedStatistics = [...statistics, latestStatistic];

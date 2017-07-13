@@ -79,7 +79,7 @@ const readUserStatistics = async (req, res) => {
       statistics: [
         ...statistics,
         {
-          date: new Date().toISOString().split('T')[0],
+          date: new Date().toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' }),
           followers: userProfile.followers_count,
         }
       ],
