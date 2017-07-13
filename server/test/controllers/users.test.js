@@ -209,7 +209,7 @@ describe('Users controller tests', () => {
         method: 'GET',
         url: `/api/users/${permalink}`,
         params: {
-          permalink,
+          permalink: permalink.toUpperCase(),
         },
       });
       const response = createResponse();
