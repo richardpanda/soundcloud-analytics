@@ -13,9 +13,10 @@ export class SearchBar extends Component {
     super(props);
 
     this.state = { query: '' };
+    this.timeoutId = null;
 
     this.handleQueryChange = this.handleQueryChange.bind(this);
-    this.handleSubmit= this.handleSubmit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   render() {
@@ -43,12 +44,16 @@ export class SearchBar extends Component {
   }
 
   handleQueryChange(event) {
-    const { dispatchChangeQuery, dispatchFetchSuggestions } = this.props;
-    const query = event.target.value;
+    event.persist();
+    clearTimeout(this.timeoutId);
+    this.timeoutId = setTimeout(() => {
+      const { dispatchChangeQuery, dispatchFetchSuggestions } = this.props;
+      const query = event.target.value;
 
-    this.setState({ query });
-    dispatchChangeQuery(query);
-    dispatchFetchSuggestions(query);
+      this.setState({ query });
+      dispatchChangeQuery(query);
+      dispatchFetchSuggestions(query);
+    }, 350);
   }
 
   handleSubmit(event) {
